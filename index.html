@@ -392,77 +392,238 @@
 
     /* ─── USER JOURNEY ─── */
     #journey {
-      padding-top: 120px;
-      padding-bottom: 120px;
+      padding: 0;
+      max-width: 100%;
     }
 
-    .journey-header {
+    #journey-intro {
       text-align: center;
-      margin-bottom: 80px;
+      padding: 120px 40px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .journey-steps {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2px;
-      background: var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-    }
-
-    .journey-step {
-      background: var(--bg2);
-      padding: 48px 32px;
+    /* Scroll container gives the height for scrolling through 4 steps */
+    #journey-scroll {
       position: relative;
-      cursor: default;
-      transition: background 0.3s;
+      height: 500vh;
     }
 
-    .journey-step:hover { background: var(--surface); }
-
-    .step-num {
-      font-size: 64px;
-      font-weight: 900;
-      color: var(--border);
-      line-height: 1;
-      margin-bottom: 20px;
-      font-family: var(--font-serif);
-    }
-
-    .step-icon {
-      font-size: 32px;
-      margin-bottom: 16px;
-    }
-
-    .step-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 12px;
-    }
-
-    .step-desc {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .step-arrow {
-      position: absolute;
-      right: -14px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 28px;
-      height: 28px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 50%;
+    /* Sticky viewport */
+    #journey-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+    }
+
+    /* Step panels — all layered on top of each other */
+    .journey-panel {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 0 80px;
+      gap: 80px;
+      opacity: 0;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    .journey-panel.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Left: text content */
+    .panel-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .panel-step-num {
+      font-family: var(--font-serif);
+      font-size: 180px;
+      line-height: 1;
+      font-weight: 400;
+      color: rgba(255,255,255,0.04);
+      letter-spacing: -8px;
+      margin-bottom: -40px;
+      position: relative;
+      z-index: 0;
+    }
+
+    .panel-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
       color: var(--accent2);
-      z-index: 10;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-title {
+      font-family: var(--font-serif);
+      font-size: clamp(40px, 5vw, 68px);
+      line-height: 1.05;
+      letter-spacing: -2px;
+      color: var(--text);
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-desc {
+      font-size: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 440px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Right: visual card */
+    .panel-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .panel-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    /* Progress dots */
+    .journey-progress {
+      position: fixed;
+      right: 32px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 500;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .journey-progress.visible { opacity: 1; }
+
+    .progress-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.4s, transform 0.4s;
+      cursor: pointer;
+    }
+
+    .progress-dot.active {
+      background: var(--accent2);
+      transform: scale(1.4);
+    }
+
+    /* Step accent colors per panel */
+    .panel-accent-1 { --panel-color: #7c6ef7; --panel-glow: rgba(124,110,247,0.2); }
+    .panel-accent-2 { --panel-color: #34d399; --panel-glow: rgba(52,211,153,0.15); }
+    .panel-accent-3 { --panel-color: #f59e0b; --panel-glow: rgba(245,158,11,0.15); }
+    .panel-accent-4 { --panel-color: #a78bfa; --panel-glow: rgba(167,139,250,0.2); }
+
+    .journey-panel .panel-label { color: var(--panel-color); }
+    .journey-panel .panel-card::before { background: linear-gradient(90deg, transparent, var(--panel-color), transparent); }
+
+    /* Background orb per panel */
+    .panel-orb {
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--panel-glow) 0%, transparent 70%);
+      pointer-events: none;
+      right: -100px;
+      top: 50%;
+      transform: translateY(-50%);
+      filter: blur(60px);
+    }
+
+    /* Transition states */
+    .journey-panel[data-state="enter-from-below"] {
+      transform: translateY(60px);
+      opacity: 0;
+    }
+    .journey-panel[data-state="exit-to-above"] {
+      transform: translateY(-60px);
+      opacity: 0;
+    }
+    .journey-panel[data-state="active"] {
+      transform: translateY(0);
+      opacity: 1;
+      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease;
+    }
+
+    /* Step numbers in nav dots label */
+    .progress-dot-label {
+      position: absolute;
+      right: 20px;
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* receipt scan animation */
+    @keyframes scan {
+      0%, 100% { top: 10%; }
+      50% { top: 85%; }
+    }
+
+    .scan-line {
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      animation: scan 2s ease-in-out infinite;
+      box-shadow: 0 0 12px var(--green);
+    }
+
+    /* drag drop animation */
+    @keyframes float-item {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+
+    .floating-tag {
+      animation: float-item 3s ease-in-out infinite;
+    }
+
+    .floating-tag:nth-child(2) { animation-delay: 0.5s; }
+    .floating-tag:nth-child(3) { animation-delay: 1s; }
+
+    @keyframes check-pop {
+      0% { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     /* ─── RECEIPT ILLUSTRATION ─── */
@@ -1099,103 +1260,182 @@
   <div class="parallax-strip"></div>
 
   <!-- ─── USER JOURNEY ─── -->
-  <section id="journey" style="max-width:100%; padding-left:40px; padding-right:40px;">
-    <div class="journey-header">
+  <section id="journey">
+
+    <div id="journey-intro">
       <span class="section-label reveal">User Journey</span>
       <h2 class="section-title reveal reveal-delay-1">From receipt to settled — in seconds.</h2>
       <p class="section-sub reveal reveal-delay-2" style="margin: 0 auto;">No spreadsheets. No calculators. No passive-aggressive Venmo requests three days later.</p>
     </div>
 
-    <div class="journey-steps reveal reveal-delay-1">
-      <div class="journey-step">
-        <div class="step-num">01</div>
-        <div class="step-icon">📷</div>
-        <div class="step-title">Snap the receipt</div>
-        <div class="step-desc">Open Eezy Receipt on iOS or web. Photograph the receipt — even if it's three feet long.</div>
-        <div class="step-arrow">→</div>
-      </div>
-      <div class="journey-step">
-        <div class="step-num">02</div>
-        <div class="step-icon">🤖</div>
-        <div class="step-title">AI extracts items</div>
-        <div class="step-desc">Google Cloud Vision OCR reads every line item, price, tax, and tip automatically.</div>
-        <div class="step-arrow">→</div>
-      </div>
-      <div class="journey-step">
-        <div class="step-num">03</div>
-        <div class="step-icon">🎯</div>
-        <div class="step-title">Assign to baskets</div>
-        <div class="step-desc">Drag and drop items into each person's basket. Shared items split proportionally.</div>
-        <div class="step-arrow">→</div>
-      </div>
-      <div class="journey-step">
-        <div class="step-num">04</div>
-        <div class="step-icon">✅</div>
-        <div class="step-title">Everyone knows their total</div>
-        <div class="step-desc">Totals update live. Everyone sees exactly what they owe including tax and tip.</div>
-      </div>
-    </div>
+    <!-- Tall scroll container -->
+    <div id="journey-scroll">
+      <div id="journey-sticky">
 
-    <!-- split UI preview -->
-    <div class="receipt-showcase reveal">
-      <div>
-        <p class="section-label">Before Eezy</p>
-        <h3 style="font-size: 22px; font-weight:700; color:var(--text); margin: 12px 0 8px;">The chaos at the table</h3>
-        <p style="font-size:14px; color:var(--muted); margin-bottom:24px;">Seven people. One comically long receipt. Someone's already on their phone. The math is wrong. Again.</p>
-        <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; font-size:14px; color:var(--muted); line-height:2;">
-          <div>🧍 "How much was the edamame again?"</div>
-          <div>🧍 "Did someone have two drinks or three?"</div>
-          <div>🧍 "Wait who had the lobster bisque?"</div>
-          <div>🧍 "I don't have cash, is Venmo okay?"</div>
-          <div>🧍 "Ugh just split it evenly I guess..."</div>
-          <div style="margin-top:12px; color:#ef4444; font-weight:600;">😤 20 minutes later. Nobody's happy.</div>
-        </div>
-      </div>
-      <div>
-        <p class="section-label">After Eezy</p>
-        <h3 style="font-size: 22px; font-weight:700; color:var(--text); margin: 12px 0 8px;">Clean. Fast. Fair.</h3>
-        <p style="font-size:14px; color:var(--muted); margin-bottom:24px;">Baskets assigned. Totals calculated. Everyone knows what they owe down to the cent.</p>
-        <div class="receipt-split-ui">
-          <div class="split-card">
-            <div class="split-card-header">
-              <div class="avatar" style="background: linear-gradient(135deg, #7c6ef7, #a78bfa);">M</div>
-              <div class="person-name">Mason</div>
-              <div class="person-total">$34.20</div>
-            </div>
-            <div class="split-items">
-              <span class="split-item-tag">Wagyu Burger</span>
-              <span class="split-item-tag">Cold Brew</span>
-              <span class="split-item-tag">Edamame ½</span>
-            </div>
+        <!-- STEP 1 -->
+        <div class="journey-panel panel-accent-1" data-step="0">
+          <div class="panel-orb"></div>
+          <div class="panel-text">
+            <div class="panel-step-num">01</div>
+            <span class="panel-label">Step One</span>
+            <h2 class="panel-title">Snap the<br/>receipt.</h2>
+            <p class="panel-desc">Open Eezy Receipt on iOS or web. Photograph the bill — even if it's comically, absurdly three feet long.</p>
           </div>
-          <div class="split-card">
-            <div class="split-card-header">
-              <div class="avatar" style="background: linear-gradient(135deg, #34d399, #059669);">R</div>
-              <div class="person-name">Roy</div>
-              <div class="person-total">$28.75</div>
-            </div>
-            <div class="split-items">
-              <span class="split-item-tag">Spicy Tuna Roll</span>
-              <span class="split-item-tag">Edamame ½</span>
-              <span class="split-item-tag">Lemonade</span>
-            </div>
-          </div>
-          <div class="split-card">
-            <div class="split-card-header">
-              <div class="avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">E</div>
-              <div class="person-name">Edward</div>
-              <div class="person-total">$41.60</div>
-            </div>
-            <div class="split-items">
-              <span class="split-item-tag">Lobster Bisque</span>
-              <span class="split-item-tag">Tiramisu</span>
-              <span class="split-item-tag">Sparkling Water</span>
+          <div class="panel-visual">
+            <div class="panel-card">
+              <div style="font-size:13px; font-weight:600; color:var(--muted); margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+                <span style="width:8px;height:8px;border-radius:50%;background:#34d399;display:inline-block;"></span>
+                Camera active
+              </div>
+              <!-- phone frame with receipt inside -->
+              <div style="background:#111; border-radius:16px; padding:20px; border:1px solid rgba(255,255,255,0.06); position:relative; overflow:hidden; min-height:200px;">
+                <div class="scan-line"></div>
+                <div style="font-family:'Courier New',monospace; font-size:11px; color:rgba(255,255,255,0.5); line-height:1.8;">
+                  <div style="color:rgba(255,255,255,0.25); text-align:center; margin-bottom:8px;">THE HUNGRY WOLF</div>
+                  <div style="display:flex;justify-content:space-between;"><span>Wagyu Burger</span><span>$24.00</span></div>
+                  <div style="display:flex;justify-content:space-between;"><span>Truffle Fries</span><span>$12.50</span></div>
+                  <div style="display:flex;justify-content:space-between;"><span>Spicy Tuna Roll</span><span>$18.00</span></div>
+                  <div style="display:flex;justify-content:space-between;"><span>Lobster Bisque</span><span>$16.00</span></div>
+                  <div style="display:flex;justify-content:space-between;"><span>Matcha Latte</span><span>$7.50</span></div>
+                  <div style="color:rgba(52,211,153,0.8); margin-top:12px; font-weight:bold; display:flex;justify-content:space-between;"><span>TOTAL</span><span>$243.34</span></div>
+                </div>
+              </div>
+              <div style="margin-top:16px; text-align:center; font-size:12px; color:var(--muted);">📷 Align receipt within frame</div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+
+        <!-- STEP 2 -->
+        <div class="journey-panel panel-accent-2" data-step="1">
+          <div class="panel-orb"></div>
+          <div class="panel-text">
+            <div class="panel-step-num">02</div>
+            <span class="panel-label">Step Two</span>
+            <h2 class="panel-title">AI reads<br/>every item.</h2>
+            <p class="panel-desc">Google Cloud Vision OCR extracts every line item, price, tax, and tip — even from crumpled, smudged, or faded receipts.</p>
+          </div>
+          <div class="panel-visual">
+            <div class="panel-card">
+              <div style="font-size:13px; font-weight:600; color:var(--muted); margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+                <span style="width:8px;height:8px;border-radius:50%;background:#34d399;display:inline-block;animation:pulse 1.5s infinite;"></span>
+                Extracting items...
+              </div>
+              <div style="display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.2); border-radius:8px; padding:10px 14px; font-size:13px;">
+                  <span style="color:var(--text);">Wagyu Burger</span>
+                  <span style="color:#34d399; font-weight:700;">$24.00 ✓</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.2); border-radius:8px; padding:10px 14px; font-size:13px;">
+                  <span style="color:var(--text);">Spicy Tuna Roll</span>
+                  <span style="color:#34d399; font-weight:700;">$18.00 ✓</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.2); border-radius:8px; padding:10px 14px; font-size:13px;">
+                  <span style="color:var(--text);">Lobster Bisque</span>
+                  <span style="color:#34d399; font-weight:700;">$16.00 ✓</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-size:13px; opacity:0.5;">
+                  <span style="color:var(--text);">Truffle Fries</span>
+                  <span style="color:var(--muted);">reading...</span>
+                </div>
+              </div>
+              <div style="margin-top:16px; font-size:12px; color:var(--muted); text-align:center;">15 items detected · 3 remaining</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="journey-panel panel-accent-3" data-step="2">
+          <div class="panel-orb"></div>
+          <div class="panel-text">
+            <div class="panel-step-num">03</div>
+            <span class="panel-label">Step Three</span>
+            <h2 class="panel-title">Drag &amp; drop<br/>to assign.</h2>
+            <p class="panel-desc">Each person gets a basket. Drag items in. Shared dishes split automatically. Totals update live as you go.</p>
+          </div>
+          <div class="panel-visual">
+            <div class="panel-card">
+              <div style="font-size:13px; font-weight:600; color:var(--muted); margin-bottom:20px;">Assigning items</div>
+              <!-- unassigned items -->
+              <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; min-height:48px;">
+                <span class="floating-tag split-item-tag" style="cursor:grab;">🍔 Wagyu Burger</span>
+                <span class="floating-tag split-item-tag" style="cursor:grab; animation-delay:0.4s;">🍵 Matcha Latte</span>
+                <span class="floating-tag split-item-tag" style="cursor:grab; animation-delay:0.8s;">🍟 Truffle Fries</span>
+              </div>
+              <!-- baskets -->
+              <div style="display:flex; flex-direction:column; gap:8px;">
+                <div style="background:rgba(124,110,247,0.08); border:1px dashed rgba(124,110,247,0.3); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <div class="avatar" style="width:28px;height:28px;font-size:12px;background:linear-gradient(135deg,#7c6ef7,#a78bfa);">M</div>
+                    <span style="color:var(--text);">Mason's basket</span>
+                  </div>
+                  <span style="color:var(--accent2); font-weight:700;">$34.20</span>
+                </div>
+                <div style="background:rgba(52,211,153,0.06); border:1px dashed rgba(52,211,153,0.25); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <div class="avatar" style="width:28px;height:28px;font-size:12px;background:linear-gradient(135deg,#34d399,#059669);">R</div>
+                    <span style="color:var(--text);">Roy's basket</span>
+                  </div>
+                  <span style="color:#34d399; font-weight:700;">$28.75</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="journey-panel panel-accent-4" data-step="3">
+          <div class="panel-orb"></div>
+          <div class="panel-text">
+            <div class="panel-step-num">04</div>
+            <span class="panel-label">Step Four</span>
+            <h2 class="panel-title">Everyone<br/>knows their total.</h2>
+            <p class="panel-desc">Tax and tip distributed proportionally. Every cent accounted for. No more group chat arguments about who owes what.</p>
+          </div>
+          <div class="panel-visual">
+            <div class="panel-card">
+              <div style="font-size:13px; font-weight:600; color:var(--muted); margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+                <span style="color:#34d399;">✓</span> Split complete
+              </div>
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; background:rgba(124,110,247,0.08); border:1px solid rgba(124,110,247,0.2); border-radius:10px;">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="avatar" style="width:32px;height:32px;font-size:13px;background:linear-gradient(135deg,#7c6ef7,#a78bfa);">M</div>
+                    <div><div style="font-size:13px;font-weight:600;color:var(--text);">Mason</div><div style="font-size:11px;color:var(--muted);">Wagyu + Cold Brew</div></div>
+                  </div>
+                  <span style="font-size:18px;font-weight:800;color:var(--accent2);">$34.20</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:10px;">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="avatar" style="width:32px;height:32px;font-size:13px;background:linear-gradient(135deg,#34d399,#059669);">R</div>
+                    <div><div style="font-size:13px;font-weight:600;color:var(--text);">Roy</div><div style="font-size:11px;color:var(--muted);">Tuna Roll + Lemonade</div></div>
+                  </div>
+                  <span style="font-size:18px;font-weight:800;color:#34d399;">$28.75</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.2); border-radius:10px;">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div class="avatar" style="width:32px;height:32px;font-size:13px;background:linear-gradient(135deg,#f59e0b,#d97706);">E</div>
+                    <div><div style="font-size:13px;font-weight:600;color:var(--text);">Edward</div><div style="font-size:11px;color:var(--muted);">Lobster + Tiramisu</div></div>
+                  </div>
+                  <span style="font-size:18px;font-weight:800;color:#f59e0b;">$41.60</span>
+                </div>
+              </div>
+              <div style="margin-top:16px; text-align:center; font-size:12px; color:var(--muted);">Total: $243.34 · 7 people · All settled ✓</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /sticky -->
+    </div><!-- /scroll -->
+
   </section>
+
+  <!-- Progress dots (fixed) -->
+  <div class="journey-progress" id="journeyProgress">
+    <div class="progress-dot active" data-idx="0"></div>
+    <div class="progress-dot" data-idx="1"></div>
+    <div class="progress-dot" data-idx="2"></div>
+    <div class="progress-dot" data-idx="3"></div>
+  </div>
 
   <div class="parallax-strip"></div>
 
@@ -1376,13 +1616,6 @@
 
     // ─── PARALLAX ───
     const parallaxEls = document.querySelectorAll('.parallax-bg');
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      parallaxEls.forEach(el => {
-        const speed = parseFloat(el.dataset.speed) || 0.2;
-        el.style.transform = `translateX(-50%) translateY(${scrollY * speed}px)`;
-      });
-    }, { passive: true });
 
     // ─── COUNTER ANIMATION ───
     const counters = document.querySelectorAll('.counter');
@@ -1408,24 +1641,90 @@
 
     // ─── NAVBAR SCROLL EFFECT ───
     const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 40) {
-        navbar.style.background = 'rgba(10,10,15,0.95)';
-      } else {
-        navbar.style.background = 'rgba(10,10,15,0.7)';
-      }
-    }, { passive: true });
 
-    // ─── SMOOTH PARALLAX FOR SECTIONS ───
-    // subtle depth effect on scroll
+    // ─── JOURNEY STICKY SCROLL ───
+    const journeyScroll = document.getElementById('journey-scroll');
+    const journeySticky = document.getElementById('journey-sticky');
+    const journeyPanels = document.querySelectorAll('.journey-panel');
+    const progressDots = document.querySelectorAll('.progress-dot');
+    const journeyProgress = document.getElementById('journeyProgress');
+    const STEP_COUNT = journeyPanels.length;
+
+    let currentStep = -1;
+
+    function setStep(idx) {
+      if (idx === currentStep) return;
+      const prev = currentStep;
+      currentStep = idx;
+
+      journeyPanels.forEach((panel, i) => {
+        panel.removeAttribute('data-state');
+        panel.classList.remove('active');
+        if (i === idx) {
+          panel.setAttribute('data-state', 'active');
+          panel.classList.add('active');
+        } else if (i < idx) {
+          panel.setAttribute('data-state', 'exit-to-above');
+        } else {
+          panel.setAttribute('data-state', 'enter-from-below');
+        }
+      });
+
+      progressDots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === idx);
+      });
+    }
+
+    // initialise all panels as below
+    journeyPanels.forEach((panel, i) => {
+      panel.setAttribute('data-state', i === 0 ? 'active' : 'enter-from-below');
+      if (i === 0) panel.classList.add('active');
+    });
+    currentStep = 0;
+
+    // click dots to scroll to that step
+    progressDots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        const idx = parseInt(dot.dataset.idx);
+        const rect = journeyScroll.getBoundingClientRect();
+        const top = window.scrollY + rect.top;
+        const scrollableHeight = journeyScroll.offsetHeight - window.innerHeight;
+        const target = top + (scrollableHeight / (STEP_COUNT - 1)) * idx;
+        window.scrollTo({ top: target, behavior: 'smooth' });
+      });
+    });
+
+    function updateJourney() {
+      if (!journeyScroll) return;
+      const rect = journeyScroll.getBoundingClientRect();
+      const scrollableHeight = journeyScroll.offsetHeight - window.innerHeight;
+      const progress = Math.max(0, Math.min(1, -rect.top / scrollableHeight));
+
+      // show/hide side dots only while in the journey section
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      journeyProgress.classList.toggle('visible', inView);
+
+      const stepIndex = Math.min(STEP_COUNT - 1, Math.floor(progress * STEP_COUNT));
+      setStep(stepIndex);
+    }
+
+    // ─── MAIN SCROLL HANDLER ───
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
+
+      // navbar
+      navbar.style.background = scrollY > 40 ? 'rgba(10,10,15,0.95)' : 'rgba(10,10,15,0.7)';
+
+      // hero orb parallax
       const heroOrb1 = document.querySelector('.hero-orb-1');
       const heroOrb2 = document.querySelector('.hero-orb-2');
       const heroOrb3 = document.querySelector('.hero-orb-3');
       if (heroOrb1) heroOrb1.style.transform = `translateX(-50%) translateY(${scrollY * 0.3}px)`;
       if (heroOrb2) heroOrb2.style.transform = `translateY(${scrollY * 0.15}px)`;
       if (heroOrb3) heroOrb3.style.transform = `translateY(${scrollY * 0.2}px)`;
+
+      // journey sticky scroll
+      updateJourney();
     }, { passive: true });
   </script>
 </body>
