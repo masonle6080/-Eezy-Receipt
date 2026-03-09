@@ -515,7 +515,117 @@
       background: linear-gradient(90deg, transparent, var(--accent), transparent);
     }
 
-    /* Progress dots */
+    /* Step accent colors per panel */
+    .panel-accent-1 { --panel-color: #7c6ef7; --panel-glow: rgba(124,110,247,0.25); }
+    .panel-accent-2 { --panel-color: #34d399; --panel-glow: rgba(52,211,153,0.18); }
+    .panel-accent-3 { --panel-color: #f59e0b; --panel-glow: rgba(245,158,11,0.18); }
+    .panel-accent-4 { --panel-color: #a78bfa; --panel-glow: rgba(167,139,250,0.25); }
+
+    .journey-panel .panel-label { color: var(--panel-color); }
+    .journey-panel .panel-card::before { background: linear-gradient(90deg, transparent, var(--panel-color), transparent); }
+
+    /* Background orb per panel — JS controls opacity via scroll */
+    .panel-orb {
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--panel-glow) 0%, transparent 70%);
+      pointer-events: none;
+      right: -150px;
+      top: 50%;
+      margin-top: -350px;
+      filter: blur(80px);
+      opacity: 0;
+      will-change: opacity;
+    }
+
+    /* JS drives all motion — no CSS transitions on panels */
+    .journey-panel {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 0 80px;
+      gap: 80px;
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+
+    .journey-panel.js-active { pointer-events: auto; }
+
+    /* Text and visual translate independently for depth */
+    .panel-text  { will-change: transform; }
+    .panel-visual { will-change: transform; }
+
+    /* ── Journey progress bar (bottom of sticky area) ── */
+    #journey-progress-bar-wrap {
+      position: absolute;
+      bottom: 40px;
+      left: 80px;
+      right: 80px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    #journey-step-counter {
+      display: flex;
+      align-items: baseline;
+      gap: 0;
+    }
+
+    #journey-step-current {
+      font-family: var(--font-serif);
+      font-size: 48px;
+      line-height: 1;
+      color: var(--text);
+      letter-spacing: -2px;
+      transition: color 0.4s;
+    }
+
+    #journey-step-total {
+      font-size: 16px;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+
+    #journey-step-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-left: auto;
+      letter-spacing: 0.05em;
+    }
+
+    #journey-bar-track {
+      height: 2px;
+      background: var(--border);
+      border-radius: 2px;
+      position: relative;
+      overflow: visible;
+    }
+
+    #journey-bar-fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      background: var(--accent2);
+      border-radius: 2px;
+      width: 0%;
+      will-change: width, background-color;
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    /* tick marks */
+    .bar-tick {
+      position: absolute;
+      top: -4px;
+      width: 1px;
+      height: 10px;
+      background: var(--border);
+    }
+
+    /* Side progress dots */
     .journey-progress {
       position: fixed;
       right: 32px;
@@ -523,73 +633,26 @@
       transform: translateY(-50%);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
       z-index: 500;
       opacity: 0;
-      transition: opacity 0.4s;
+      transition: opacity 0.5s;
     }
 
     .journey-progress.visible { opacity: 1; }
 
     .progress-dot {
-      width: 8px; height: 8px;
+      width: 6px; height: 6px;
       border-radius: 50%;
-      background: var(--border);
-      transition: background 0.4s, transform 0.4s;
+      background: rgba(255,255,255,0.15);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
       cursor: pointer;
     }
 
     .progress-dot.active {
       background: var(--accent2);
-      transform: scale(1.4);
-    }
-
-    /* Step accent colors per panel */
-    .panel-accent-1 { --panel-color: #7c6ef7; --panel-glow: rgba(124,110,247,0.2); }
-    .panel-accent-2 { --panel-color: #34d399; --panel-glow: rgba(52,211,153,0.15); }
-    .panel-accent-3 { --panel-color: #f59e0b; --panel-glow: rgba(245,158,11,0.15); }
-    .panel-accent-4 { --panel-color: #a78bfa; --panel-glow: rgba(167,139,250,0.2); }
-
-    .journey-panel .panel-label { color: var(--panel-color); }
-    .journey-panel .panel-card::before { background: linear-gradient(90deg, transparent, var(--panel-color), transparent); }
-
-    /* Background orb per panel */
-    .panel-orb {
-      position: absolute;
-      width: 500px; height: 500px;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--panel-glow) 0%, transparent 70%);
-      pointer-events: none;
-      right: -100px;
-      top: 50%;
-      transform: translateY(-50%);
-      filter: blur(60px);
-    }
-
-    /* Transition states */
-    .journey-panel[data-state="enter-from-below"] {
-      transform: translateY(60px);
-      opacity: 0;
-    }
-    .journey-panel[data-state="exit-to-above"] {
-      transform: translateY(-60px);
-      opacity: 0;
-    }
-    .journey-panel[data-state="active"] {
-      transform: translateY(0);
-      opacity: 1;
-      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease;
-    }
-
-    /* Step numbers in nav dots label */
-    .progress-dot-label {
-      position: absolute;
-      right: 20px;
-      font-size: 11px;
-      color: var(--muted);
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
+      transform: scale(1.6);
+      box-shadow: 0 0 8px var(--accent-glow);
     }
 
     /* receipt scan animation */
@@ -1424,6 +1487,21 @@
           </div>
         </div>
 
+        <!-- Progress bar -->
+        <div id="journey-progress-bar-wrap">
+          <div style="display:flex; align-items:baseline; gap:0;">
+            <span id="journey-step-current">01</span>
+            <span id="journey-step-total">&thinsp;/ 04</span>
+            <span id="journey-step-label">Snap the receipt</span>
+          </div>
+          <div id="journey-bar-track">
+            <div id="journey-bar-fill"></div>
+            <div class="bar-tick" style="left:25%"></div>
+            <div class="bar-tick" style="left:50%"></div>
+            <div class="bar-tick" style="left:75%"></div>
+          </div>
+        </div>
+
       </div><!-- /sticky -->
     </div><!-- /scroll -->
 
@@ -1642,71 +1720,111 @@
     // ─── NAVBAR SCROLL EFFECT ───
     const navbar = document.getElementById('navbar');
 
-    // ─── JOURNEY STICKY SCROLL ───
-    const journeyScroll = document.getElementById('journey-scroll');
-    const journeySticky = document.getElementById('journey-sticky');
-    const journeyPanels = document.querySelectorAll('.journey-panel');
-    const progressDots = document.querySelectorAll('.progress-dot');
-    const journeyProgress = document.getElementById('journeyProgress');
-    const STEP_COUNT = journeyPanels.length;
+    // ─── JOURNEY CONTINUOUS SCROLL PARALLAX ───
+    const journeyScroll    = document.getElementById('journey-scroll');
+    const journeyPanels    = document.querySelectorAll('.journey-panel');
+    const progressDots     = document.querySelectorAll('.progress-dot');
+    const journeyProgress  = document.getElementById('journeyProgress');
+    const barFill          = document.getElementById('journey-bar-fill');
+    const stepCurrentEl    = document.getElementById('journey-step-current');
+    const stepLabelEl      = document.getElementById('journey-step-label');
+    const STEPS            = journeyPanels.length;
 
-    let currentStep = -1;
+    const STEP_LABELS = ['Snap the receipt', 'AI reads every item', 'Drag & drop to assign', 'Everyone knows their total'];
+    const STEP_COLORS = ['#7c6ef7', '#34d399', '#f59e0b', '#a78bfa'];
 
-    function setStep(idx) {
-      if (idx === currentStep) return;
-      const prev = currentStep;
-      currentStep = idx;
+    // Text translates at full rate; visual card at 55% — creates depth separation
+    const TEXT_RATE   = 1.0;
+    const VISUAL_RATE = 0.55;
+    // Opacity: fully visible in centre ±30% of step, fades at edges
+    const FADE_ZONE   = 0.35;
 
-      journeyPanels.forEach((panel, i) => {
-        panel.removeAttribute('data-state');
-        panel.classList.remove('active');
-        if (i === idx) {
-          panel.setAttribute('data-state', 'active');
-          panel.classList.add('active');
-        } else if (i < idx) {
-          panel.setAttribute('data-state', 'exit-to-above');
-        } else {
-          panel.setAttribute('data-state', 'enter-from-below');
-        }
-      });
+    let rafId = null;
+    let lastProgress = -1;
 
-      progressDots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === idx);
-      });
+    function easeInOut(t) {
+      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
     }
 
-    // initialise all panels as below
-    journeyPanels.forEach((panel, i) => {
-      panel.setAttribute('data-state', i === 0 ? 'active' : 'enter-from-below');
-      if (i === 0) panel.classList.add('active');
-    });
-    currentStep = 0;
-
-    // click dots to scroll to that step
-    progressDots.forEach(dot => {
-      dot.addEventListener('click', () => {
-        const idx = parseInt(dot.dataset.idx);
-        const rect = journeyScroll.getBoundingClientRect();
-        const top = window.scrollY + rect.top;
-        const scrollableHeight = journeyScroll.offsetHeight - window.innerHeight;
-        const target = top + (scrollableHeight / (STEP_COUNT - 1)) * idx;
-        window.scrollTo({ top: target, behavior: 'smooth' });
-      });
-    });
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
     function updateJourney() {
       if (!journeyScroll) return;
       const rect = journeyScroll.getBoundingClientRect();
-      const scrollableHeight = journeyScroll.offsetHeight - window.innerHeight;
-      const progress = Math.max(0, Math.min(1, -rect.top / scrollableHeight));
+      const scrollableH = journeyScroll.offsetHeight - window.innerHeight;
+      // raw progress 0..1 through the journey section
+      const progress = clamp(-rect.top / scrollableH, 0, 1);
 
-      // show/hide side dots only while in the journey section
       const inView = rect.top < window.innerHeight && rect.bottom > 0;
       journeyProgress.classList.toggle('visible', inView);
 
-      const stepIndex = Math.min(STEP_COUNT - 1, Math.floor(progress * STEP_COUNT));
-      setStep(stepIndex);
+      if (!inView) return;
+      if (Math.abs(progress - lastProgress) < 0.0001) return;
+      lastProgress = progress;
+
+      // Overall bar fill: 0..100%
+      barFill.style.width = (progress * 100) + '%';
+
+      // Which step are we on (for counter + label)
+      // Each step occupies 1/STEPS of the range; last step is [3/4 .. 1]
+      const rawStep   = progress * STEPS;
+      const stepIndex = clamp(Math.floor(rawStep), 0, STEPS - 1);
+
+      // Update counter + label + bar color
+      stepCurrentEl.textContent = String(stepIndex + 1).padStart(2, '0');
+      stepLabelEl.textContent   = STEP_LABELS[stepIndex];
+      barFill.style.background  = STEP_COLORS[stepIndex];
+      barFill.style.boxShadow   = `0 0 12px ${STEP_COLORS[stepIndex]}66`;
+
+      // Animate each panel
+      journeyPanels.forEach((panel, i) => {
+        const panelText   = panel.querySelector('.panel-text');
+        const panelVisual = panel.querySelector('.panel-visual');
+        const panelOrb    = panel.querySelector('.panel-orb');
+
+        // panelP: how far through this panel's window we are
+        // 0 = just entering (from bottom), 1 = leaving (to top)
+        // panel i is centred at rawStep == i + 0.5
+        const panelP = rawStep - i; // negative = hasn't arrived yet, 0..1 = on screen, >1 = past
+
+        // translateY in vh: text slides 100vh per step, visual slides less
+        const textVH   = (i - rawStep) * 100 * TEXT_RATE;
+        const visualVH = (i - rawStep) * 100 * VISUAL_RATE;
+
+        // Opacity based on distance from centre (panelP ≈ 0.5 = fully visible)
+        const distFromCentre = Math.abs(panelP - 0.5); // 0 at centre, 0.5 at edges
+        const rawOpacity = clamp(1 - (distFromCentre - (0.5 - FADE_ZONE)) / FADE_ZONE, 0, 1);
+        const opacity = rawOpacity;
+
+        // Scale: very subtle — 0.94 when off-screen, 1 when centred
+        const scale = 0.94 + 0.06 * clamp(1 - distFromCentre * 2, 0, 1);
+
+        panel.style.opacity = opacity;
+        panel.classList.toggle('js-active', opacity > 0.05);
+
+        if (panelText)   panelText.style.transform   = `translateY(${textVH}vh)`;
+        if (panelVisual) panelVisual.style.transform  = `translateY(${visualVH}vh) scale(${scale})`;
+        if (panelOrb)    panelOrb.style.opacity       = clamp(1 - distFromCentre * 3, 0, 1);
+      });
+
+      // Side dots
+      progressDots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === stepIndex);
+      });
     }
+
+    // Click dots → scroll to that step
+    progressDots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        const idx = parseInt(dot.dataset.idx);
+        const rect = journeyScroll.getBoundingClientRect();
+        const top  = window.scrollY + rect.top;
+        const scrollableH = journeyScroll.offsetHeight - window.innerHeight;
+        // target the centre of each step's window
+        const target = top + (scrollableH / STEPS) * (idx + 0.5);
+        window.scrollTo({ top: target, behavior: 'smooth' });
+      });
+    });
 
     // ─── MAIN SCROLL HANDLER ───
     window.addEventListener('scroll', () => {
