@@ -114,6 +114,8 @@
 
     .nav-links a:hover { color: var(--text); }
 
+    .nav-links a.nav-active { color: var(--text); }
+
     .nav-cta {
       background: var(--accent);
       color: white !important;
@@ -627,35 +629,6 @@
       background: var(--border);
     }
 
-    /* Side progress dots */
-    .journey-progress {
-      position: fixed;
-      right: 32px;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      z-index: 500;
-      opacity: 0;
-      transition: opacity 0.5s;
-    }
-
-    .journey-progress.visible { opacity: 1; }
-
-    .progress-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-      cursor: pointer;
-    }
-
-    .progress-dot.active {
-      background: var(--accent2);
-      transform: scale(1.6);
-      box-shadow: 0 0 8px var(--accent-glow);
-    }
 
     /* receipt scan animation */
     @keyframes scan {
@@ -1509,13 +1482,6 @@
 
   </section>
 
-  <!-- Progress dots (fixed) -->
-  <div class="journey-progress" id="journeyProgress">
-    <div class="progress-dot active" data-idx="0"></div>
-    <div class="progress-dot" data-idx="1"></div>
-    <div class="progress-dot" data-idx="2"></div>
-    <div class="progress-dot" data-idx="3"></div>
-  </div>
 
   <div class="parallax-strip"></div>
 
@@ -1725,8 +1691,6 @@
     // ─── JOURNEY CONTINUOUS SCROLL PARALLAX ───
     const journeyScroll    = document.getElementById('journey-scroll');
     const journeyPanels    = document.querySelectorAll('.journey-panel');
-    const progressDots     = document.querySelectorAll('.progress-dot');
-    const journeyProgress  = document.getElementById('journeyProgress');
     const barFill          = document.getElementById('journey-bar-fill');
     const stepCurrentEl    = document.getElementById('journey-step-current');
     const stepLabelEl      = document.getElementById('journey-step-label');
@@ -1758,7 +1722,6 @@
       const progress = clamp(-rect.top / scrollableH, 0, 1);
 
       const inView = rect.top < window.innerHeight && rect.bottom > 0;
-      journeyProgress.classList.toggle('visible', inView);
 
       if (!inView) return;
       if (Math.abs(progress - lastProgress) < 0.0001) return;
@@ -1809,43 +1772,55 @@
         if (panelOrb)    panelOrb.style.opacity       = clamp(1 - distFromCentre * 3, 0, 1);
       });
 
-      // Side dots
-      progressDots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === stepIndex);
-      });
     }
 
-    // Click dots → scroll to that step
-    progressDots.forEach(dot => {
-      dot.addEventListener('click', () => {
-        const idx = parseInt(dot.dataset.idx);
-        const rect = journeyScroll.getBoundingClientRect();
-        const top  = window.scrollY + rect.top;
-        const scrollableH = journeyScroll.offsetHeight - window.innerHeight;
-        // target the centre of each step's window
-        const target = top + (scrollableH / STEPS) * (idx + 0.5);
-        window.scrollTo({ top: target, behavior: 'smooth' });
-      });
-    });
+    // ─── ACTIVE NAV ───
+    const navSections = [
+      { id: 'product',     link: document.querySelector('a[href="#product"]') },
+      { id: 'journey',     link: document.querySelector('a[href="#journey"]') },
+      { id: 'demo',        link: document.querySelector('a[href="#demo"]') },
+      { id: 'technical',   link: document.querySelector('a[href="#technical"]') },
+      { id: 'getstarted',  link: document.querySelector('a[href="#getstarted"]') },
+    ];
+
+    function updateActiveNav(scrollY) {
+      const viewportMid = scrollY + window.innerHeight * 0.4;
+      let active = null;
+      for (const s of navSections) {
+        const el = document.getElementById(s.id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top + scrollY;
+        const bottom = top + el.offsetHeight;
+        if (viewportMid >= top && viewportMid < bottom) { active = s; break; }
+      }
+      navSections.forEach(s => s.link && s.link.classList.remove('nav-active'));
+      if (active && active.link) active.link.classList.add('nav-active');
+    }
 
     // ─── MAIN SCROLL HANDLER ───
+    const heroOrb1 = document.querySelector('.hero-orb-1');
+    const heroOrb2 = document.querySelector('.hero-orb-2');
+    const heroOrb3 = document.querySelector('.hero-orb-3');
+
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
 
-      // navbar
+      // navbar background
       navbar.style.background = scrollY > 40 ? 'rgba(10,10,15,0.95)' : 'rgba(10,10,15,0.7)';
 
       // hero orb parallax
-      const heroOrb1 = document.querySelector('.hero-orb-1');
-      const heroOrb2 = document.querySelector('.hero-orb-2');
-      const heroOrb3 = document.querySelector('.hero-orb-3');
       if (heroOrb1) heroOrb1.style.transform = `translateX(-50%) translateY(${scrollY * 0.3}px)`;
       if (heroOrb2) heroOrb2.style.transform = `translateY(${scrollY * 0.15}px)`;
       if (heroOrb3) heroOrb3.style.transform = `translateY(${scrollY * 0.2}px)`;
 
+      // active nav link
+      updateActiveNav(scrollY);
+
       // journey sticky scroll
       updateJourney();
     }, { passive: true });
+
+    updateActiveNav(window.scrollY);
   </script>
 </body>
 </html>
