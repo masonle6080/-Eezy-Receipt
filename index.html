@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eezy Receipt — Split Smarter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #0f0f18;
+      --surface: rgba(255,255,255,0.04);
+      --surface2: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.08);
+      --text: #f0f0f4;
+      --muted: #8888a0;
+      --accent: #7c6ef7;
+      --accent2: #a78bfa;
+      --accent-glow: rgba(124,110,247,0.35);
+      --green: #34d399;
+      --font-sans: 'Inter', sans-serif;
+      --font-serif: 'DM Serif Display', serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 0 40px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10,10,15,0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .nav-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: color 0.2s;
+      letter-spacing: 0.01em;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--accent);
+      color: white !important;
+      padding: 8px 20px;
+      border-radius: 8px;
+      transition: opacity 0.2s, transform 0.2s !important;
+    }
+
+    .nav-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 40px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+    }
+
+    .hero-orb-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(124,110,247,0.18) 0%, transparent 70%);
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .hero-orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(52,211,153,0.1) 0%, transparent 70%);
+      bottom: 0; right: -100px;
+    }
+
+    .hero-orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(167,139,250,0.12) 0%, transparent 70%);
+      top: 200px; left: -50px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent2);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero-headline {
+      font-family: var(--font-serif);
+      font-size: clamp(52px, 8vw, 96px);
+      line-height: 1.0;
+      letter-spacing: -2px;
+      color: var(--text);
+      margin-bottom: 24px;
+      max-width: 900px;
+    }
+
+    .hero-headline em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--accent2), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 540px;
+      margin-bottom: 48px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 80px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px var(--accent-glow); }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .btn-secondary:hover { transform: translateY(-2px); background: var(--surface2); }
+
+    /* ─── STATS ─── */
+    .stats-row {
+      display: flex;
+      gap: 60px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .stat-num span {
+      background: linear-gradient(135deg, var(--accent2), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 40px;
+      background: var(--border);
+    }
+
+    /* ─── RECEIPT HERO VISUAL ─── */
+    .receipt-visual {
+      margin-top: 80px;
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .receipt-glow {
+      position: absolute;
+      inset: -40px;
+      background: radial-gradient(ellipse at center, rgba(124,110,247,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .receipt-window {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .window-bar {
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .window-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+
+    .window-dot:nth-child(1) { background: #ff5f57; }
+    .window-dot:nth-child(2) { background: #febc2e; }
+    .window-dot:nth-child(3) { background: #28c840; }
+
+    .window-title {
+      flex: 1;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ─── SECTION BASE ─── */
+    section {
+      padding: 120px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(36px, 5vw, 60px);
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    /* ─── PARALLAX DIVIDER ─── */
+    .parallax-strip {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 40px;
+    }
+
+    /* ─── USER JOURNEY ─── */
+    #journey {
+      padding-top: 120px;
+      padding-bottom: 120px;
+    }
+
+    .journey-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .journey-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .journey-step {
+      background: var(--bg2);
+      padding: 48px 32px;
+      position: relative;
+      cursor: default;
+      transition: background 0.3s;
+    }
+
+    .journey-step:hover { background: var(--surface); }
+
+    .step-num {
+      font-size: 64px;
+      font-weight: 900;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 20px;
+      font-family: var(--font-serif);
+    }
+
+    .step-icon {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .step-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .step-arrow {
+      position: absolute;
+      right: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--accent2);
+      z-index: 10;
+    }
+
+    /* ─── RECEIPT ILLUSTRATION ─── */
+    .receipt-showcase {
+      margin-top: 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .receipt-paper {
+      background: #fafaf8;
+      border-radius: 4px 4px 12px 12px;
+      padding: 32px 24px;
+      color: #222;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      position: relative;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.1);
+      transform: rotate(-1.5deg);
+      max-height: 480px;
+      overflow: hidden;
+    }
+
+    .receipt-paper::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 80px;
+      background: linear-gradient(transparent, #fafaf8);
+    }
+
+    .receipt-paper-inner {
+      position: absolute;
+      bottom: -20px; left: 0; right: 0;
+      height: 40px;
+      background: #fafaf8;
+    }
+
+    .receipt-header { text-align: center; margin-bottom: 16px; }
+    .receipt-header h3 { font-size: 18px; font-weight: bold; }
+    .receipt-header p { font-size: 11px; color: #666; }
+    .receipt-divider { border-top: 1px dashed #ccc; margin: 12px 0; }
+    .receipt-item { display: flex; justify-content: space-between; margin: 6px 0; font-size: 12px; }
+    .receipt-item.bold { font-weight: bold; }
+    .receipt-tail { text-align: center; font-size: 11px; color: #999; margin-top: 16px; }
+
+    .receipt-split-ui {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .split-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .split-card:hover { transform: translateX(6px); border-color: var(--accent); }
+
+    .split-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .person-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .person-total {
+      margin-left: auto;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent2);
+    }
+
+    .split-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .split-item-tag {
+      background: rgba(124,110,247,0.12);
+      border: 1px solid rgba(124,110,247,0.25);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: var(--accent2);
+    }
+
+    /* ─── DEMO ─── */
+    #demo {
+      text-align: center;
+    }
+
+    .demo-container {
+      margin-top: 60px;
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .demo-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .play-btn {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 40px var(--accent-glow);
+    }
+
+    .play-btn:hover { transform: scale(1.08); }
+
+    .demo-label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ─── TECH OVERVIEW ─── */
+    #technical {
+      text-align: center;
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-top: 60px;
+      text-align: left;
+    }
+
+    .tech-card {
+      background: var(--bg2);
+      padding: 40px 32px;
+      transition: background 0.3s;
+    }
+
+    .tech-card:hover { background: var(--surface); }
+
+    .tech-icon {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .tech-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .tech-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .tech-tag {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--accent2);
+      font-weight: 600;
+      margin-top: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    .arch-diagram {
+      margin-top: 80px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+
+    .arch-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 20px 24px;
+    }
+
+    .arch-node-icon {
+      font-size: 28px;
+    }
+
+    .arch-node-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .arch-node-sub {
+      font-size: 10px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .arch-arrow {
+      font-size: 20px;
+      color: var(--accent);
+      padding: 0 8px;
+      align-self: center;
+    }
+
+    /* ─── GET STARTED ─── */
+    #getstarted {
+      text-align: center;
+      padding-bottom: 160px;
+    }
+
+    .cta-block {
+      background: linear-gradient(135deg, rgba(124,110,247,0.12), rgba(52,211,153,0.06));
+      border: 1px solid rgba(124,110,247,0.2);
+      border-radius: 28px;
+      padding: 80px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-block::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: 20%; right: 20%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent2), transparent);
+    }
+
+    .cta-title {
+      font-family: var(--font-serif);
+      font-size: clamp(36px, 5vw, 64px);
+      color: var(--text);
+      margin-bottom: 20px;
+      letter-spacing: -1.5px;
+    }
+
+    .cta-sub {
+      font-size: 17px;
+      color: var(--muted);
+      margin-bottom: 48px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .team-section {
+      margin-top: 80px;
+      padding-top: 60px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .team-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    .team-members {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .team-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .team-chip:hover { border-color: var(--accent); color: var(--accent2); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    /* ─── SCROLL ANIMATIONS ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ─── PARALLAX ─── */
+    .parallax-bg {
+      will-change: transform;
+    }
+
+    /* ─── MARQUEE ─── */
+    .marquee-wrapper {
+      overflow: hidden;
+      position: relative;
+      margin: 80px 0 0;
+    }
+
+    .marquee-wrapper::before,
+    .marquee-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 200px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .marquee-wrapper::before { left: 0; background: linear-gradient(90deg, var(--bg), transparent); }
+    .marquee-wrapper::after { right: 0; background: linear-gradient(-90deg, var(--bg), transparent); }
+
+    .marquee-track {
+      display: flex;
+      gap: 16px;
+      animation: marquee 20s linear infinite;
+      width: max-content;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .marquee-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ─── COUNTER ANIMATION ─── */
+    .counter { display: inline; }
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      section { padding: 80px 20px; }
+      .journey-steps { grid-template-columns: 1fr 1fr; }
+      .tech-grid { grid-template-columns: 1fr; }
+      .receipt-showcase { grid-template-columns: 1fr; }
+      .arch-diagram { flex-direction: column; }
+      .arch-arrow { transform: rotate(90deg); }
+      footer { flex-direction: column; align-items: flex-start; }
+      .stat-divider { display: none; }
+      .stats-row { gap: 32px; }
+      .cta-block { padding: 48px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAVBAR ─── -->
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">
+      <div class="logo-mark">E</div>
+      <span class="nav-name">Eezy Receipt</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#product">Product</a></li>
+      <li><a href="#journey">User Journey</a></li>
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="#technical">Technical</a></li>
+      <li><a href="#getstarted" class="nav-cta">Get Started</a></li>
+    </ul>
+  </nav>
+
+  <!-- ─── HERO ─── -->
+  <section id="hero" style="max-width:100%; padding-left: 40px; padding-right: 40px;">
+    <div class="hero-orb hero-orb-1 parallax-bg" data-speed="0.3"></div>
+    <div class="hero-orb hero-orb-2 parallax-bg" data-speed="0.15"></div>
+    <div class="hero-orb hero-orb-3 parallax-bg" data-speed="0.2"></div>
+
+    <div class="hero-badge reveal">
+      <span class="badge-dot"></span>
+      UCSB CS148 · W26 · Project 04
+    </div>
+
+    <h1 class="hero-headline reveal reveal-delay-1">
+      Split receipts.<br /><em>Not friendships.</em>
+    </h1>
+
+    <p class="hero-sub reveal reveal-delay-2">
+      Snap a photo. Watch AI extract every item. Drag, assign, and settle up — in seconds. No more awkward math at the table.
+    </p>
+
+    <div class="hero-actions reveal reveal-delay-3">
+      <a href="https://github.com/ucsb-cs148-w26/pj04-receipt-divider" target="_blank" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+      <a href="#demo" class="btn-secondary">
+        Watch Demo
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="stats-row reveal reveal-delay-4">
+      <div class="stat">
+        <div class="stat-num"><span class="counter" data-target="90">0</span>%</div>
+        <div class="stat-label">Less bill-splitting friction</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-num"><span class="counter" data-target="3">0</span>s</div>
+        <div class="stat-label">Average split time</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-num"><span class="counter" data-target="1000">0</span>+</div>
+        <div class="stat-label">Relationships saved</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <div class="stat-num"><span class="counter" data-target="100">0</span>%</div>
+        <div class="stat-label">Fewer post-dinner arguments</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── MARQUEE ─── -->
+  <div class="marquee-wrapper" style="padding: 0;">
+    <div class="marquee-track">
+      <div class="marquee-item">📸 Snap a photo</div>
+      <div class="marquee-item">🤖 AI item extraction</div>
+      <div class="marquee-item">👆 Drag & drop assignment</div>
+      <div class="marquee-item">💸 Instant cost split</div>
+      <div class="marquee-item">🧾 Tax & tip included</div>
+      <div class="marquee-item">📱 iOS & Web</div>
+      <div class="marquee-item">☁️ Google Cloud Vision</div>
+      <div class="marquee-item">🗄️ Supabase backend</div>
+      <div class="marquee-item">⚡ Real-time sync</div>
+      <div class="marquee-item">🎯 Multi-person baskets</div>
+      <!-- repeat for seamless loop -->
+      <div class="marquee-item">📸 Snap a photo</div>
+      <div class="marquee-item">🤖 AI item extraction</div>
+      <div class="marquee-item">👆 Drag & drop assignment</div>
+      <div class="marquee-item">💸 Instant cost split</div>
+      <div class="marquee-item">🧾 Tax & tip included</div>
+      <div class="marquee-item">📱 iOS & Web</div>
+      <div class="marquee-item">☁️ Google Cloud Vision</div>
+      <div class="marquee-item">🗄️ Supabase backend</div>
+      <div class="marquee-item">⚡ Real-time sync</div>
+      <div class="marquee-item">🎯 Multi-person baskets</div>
+    </div>
+  </div>
+
+  <div class="parallax-strip" style="margin-top: 80px;"></div>
+
+  <!-- ─── PRODUCT ─── -->
+  <section id="product">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
+      <div>
+        <span class="section-label reveal">Product</span>
+        <h2 class="section-title reveal reveal-delay-1">
+          The asynchronous<br />division of receipts.
+        </h2>
+        <p class="section-sub reveal reveal-delay-2">
+          Eezy Receipt eliminates the chaos of splitting bills. Our AI reads your receipt, you assign items to friends, and everyone gets an exact total — automatically.
+        </p>
+
+        <div style="margin-top: 48px; display: flex; flex-direction: column; gap: 20px;" class="reveal reveal-delay-3">
+          <div style="display:flex; gap:16px; align-items:flex-start;">
+            <div style="width:40px; height:40px; border-radius:10px; background: rgba(124,110,247,0.15); border: 1px solid rgba(124,110,247,0.3); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">👁️</div>
+            <div>
+              <div style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px;">OCR-powered reading</div>
+              <div style="font-size:14px; color:var(--muted);">Google Cloud Vision extracts every line item from even the messiest receipts.</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:16px; align-items:flex-start;">
+            <div style="width:40px; height:40px; border-radius:10px; background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.25); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">🛒</div>
+            <div>
+              <div style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px;">Personal baskets</div>
+              <div style="font-size:14px; color:var(--muted);">Each person gets their own basket. Drag items in, see totals update live.</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:16px; align-items:flex-start;">
+            <div style="width:40px; height:40px; border-radius:10px; background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.25); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">🧮</div>
+            <div>
+              <div style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px;">Tax & tip split</div>
+              <div style="font-size:14px; color:var(--muted);">Proportional tax and tip calculation baked in — no manual math ever.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- receipt illustration -->
+      <div class="reveal reveal-delay-2" style="position:relative;">
+        <div style="position:absolute; inset:-60px; background:radial-gradient(ellipse, rgba(124,110,247,0.12) 0%, transparent 70%); pointer-events:none;"></div>
+        <div class="receipt-paper" style="position:relative; z-index:1;">
+          <div class="receipt-header">
+            <h3>THE HUNGRY WOLF</h3>
+            <p>1234 Isla Vista Blvd, Goleta CA</p>
+            <p style="margin-top:4px;">Table 7 — Server: Jess — Party of 7</p>
+          </div>
+          <div class="receipt-divider"></div>
+          <div class="receipt-item"><span>Wagyu Burger</span><span>$24.00</span></div>
+          <div class="receipt-item"><span>Avocado Toast (x2)</span><span>$19.00</span></div>
+          <div class="receipt-item"><span>Truffle Fries</span><span>$12.50</span></div>
+          <div class="receipt-item"><span>Spicy Tuna Roll</span><span>$18.00</span></div>
+          <div class="receipt-item"><span>Edamame</span><span>$8.00</span></div>
+          <div class="receipt-item"><span>Matcha Latte</span><span>$7.50</span></div>
+          <div class="receipt-item"><span>Cold Brew</span><span>$6.50</span></div>
+          <div class="receipt-item"><span>Lobster Bisque</span><span>$16.00</span></div>
+          <div class="receipt-item"><span>Caesar Salad</span><span>$14.00</span></div>
+          <div class="receipt-item"><span>Chicken Sandwich</span><span>$17.50</span></div>
+          <div class="receipt-item"><span>Lemonade (x3)</span><span>$15.00</span></div>
+          <div class="receipt-item"><span>Tiramisu</span><span>$11.00</span></div>
+          <div class="receipt-item"><span>Cheesecake</span><span>$9.50</span></div>
+          <div class="receipt-item"><span>Side Salad</span><span>$6.00</span></div>
+          <div class="receipt-item"><span>Sparkling Water</span><span>$4.50</span></div>
+          <div class="receipt-divider"></div>
+          <div class="receipt-item"><span>Subtotal</span><span>$189.00</span></div>
+          <div class="receipt-item"><span>Tax (8.75%)</span><span>$16.54</span></div>
+          <div class="receipt-item"><span>Suggested Tip (20%)</span><span>$37.80</span></div>
+          <div class="receipt-divider"></div>
+          <div class="receipt-item bold"><span>TOTAL</span><span>$243.34</span></div>
+          <div class="receipt-tail">
+            <p>★★★★★ Thank you for visiting!</p>
+            <p>**COMICALLY LONG RECEIPT**</p>
+          </div>
+        </div>
+        <div style="position:absolute; bottom:-12px; left:12px; right:12px; height:16px; background:#f0f0ed; border-radius:0 0 4px 4px; z-index:0;"></div>
+        <div style="position:absolute; bottom:-22px; left:24px; right:24px; height:12px; background:#e8e8e5; border-radius:0 0 4px 4px; z-index:0;"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="parallax-strip"></div>
+
+  <!-- ─── USER JOURNEY ─── -->
+  <section id="journey" style="max-width:100%; padding-left:40px; padding-right:40px;">
+    <div class="journey-header">
+      <span class="section-label reveal">User Journey</span>
+      <h2 class="section-title reveal reveal-delay-1">From receipt to settled — in seconds.</h2>
+      <p class="section-sub reveal reveal-delay-2" style="margin: 0 auto;">No spreadsheets. No calculators. No passive-aggressive Venmo requests three days later.</p>
+    </div>
+
+    <div class="journey-steps reveal reveal-delay-1">
+      <div class="journey-step">
+        <div class="step-num">01</div>
+        <div class="step-icon">📷</div>
+        <div class="step-title">Snap the receipt</div>
+        <div class="step-desc">Open Eezy Receipt on iOS or web. Photograph the receipt — even if it's three feet long.</div>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="journey-step">
+        <div class="step-num">02</div>
+        <div class="step-icon">🤖</div>
+        <div class="step-title">AI extracts items</div>
+        <div class="step-desc">Google Cloud Vision OCR reads every line item, price, tax, and tip automatically.</div>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="journey-step">
+        <div class="step-num">03</div>
+        <div class="step-icon">🎯</div>
+        <div class="step-title">Assign to baskets</div>
+        <div class="step-desc">Drag and drop items into each person's basket. Shared items split proportionally.</div>
+        <div class="step-arrow">→</div>
+      </div>
+      <div class="journey-step">
+        <div class="step-num">04</div>
+        <div class="step-icon">✅</div>
+        <div class="step-title">Everyone knows their total</div>
+        <div class="step-desc">Totals update live. Everyone sees exactly what they owe including tax and tip.</div>
+      </div>
+    </div>
+
+    <!-- split UI preview -->
+    <div class="receipt-showcase reveal">
+      <div>
+        <p class="section-label">Before Eezy</p>
+        <h3 style="font-size: 22px; font-weight:700; color:var(--text); margin: 12px 0 8px;">The chaos at the table</h3>
+        <p style="font-size:14px; color:var(--muted); margin-bottom:24px;">Seven people. One comically long receipt. Someone's already on their phone. The math is wrong. Again.</p>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; font-size:14px; color:var(--muted); line-height:2;">
+          <div>🧍 "How much was the edamame again?"</div>
+          <div>🧍 "Did someone have two drinks or three?"</div>
+          <div>🧍 "Wait who had the lobster bisque?"</div>
+          <div>🧍 "I don't have cash, is Venmo okay?"</div>
+          <div>🧍 "Ugh just split it evenly I guess..."</div>
+          <div style="margin-top:12px; color:#ef4444; font-weight:600;">😤 20 minutes later. Nobody's happy.</div>
+        </div>
+      </div>
+      <div>
+        <p class="section-label">After Eezy</p>
+        <h3 style="font-size: 22px; font-weight:700; color:var(--text); margin: 12px 0 8px;">Clean. Fast. Fair.</h3>
+        <p style="font-size:14px; color:var(--muted); margin-bottom:24px;">Baskets assigned. Totals calculated. Everyone knows what they owe down to the cent.</p>
+        <div class="receipt-split-ui">
+          <div class="split-card">
+            <div class="split-card-header">
+              <div class="avatar" style="background: linear-gradient(135deg, #7c6ef7, #a78bfa);">M</div>
+              <div class="person-name">Mason</div>
+              <div class="person-total">$34.20</div>
+            </div>
+            <div class="split-items">
+              <span class="split-item-tag">Wagyu Burger</span>
+              <span class="split-item-tag">Cold Brew</span>
+              <span class="split-item-tag">Edamame ½</span>
+            </div>
+          </div>
+          <div class="split-card">
+            <div class="split-card-header">
+              <div class="avatar" style="background: linear-gradient(135deg, #34d399, #059669);">R</div>
+              <div class="person-name">Roy</div>
+              <div class="person-total">$28.75</div>
+            </div>
+            <div class="split-items">
+              <span class="split-item-tag">Spicy Tuna Roll</span>
+              <span class="split-item-tag">Edamame ½</span>
+              <span class="split-item-tag">Lemonade</span>
+            </div>
+          </div>
+          <div class="split-card">
+            <div class="split-card-header">
+              <div class="avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">E</div>
+              <div class="person-name">Edward</div>
+              <div class="person-total">$41.60</div>
+            </div>
+            <div class="split-items">
+              <span class="split-item-tag">Lobster Bisque</span>
+              <span class="split-item-tag">Tiramisu</span>
+              <span class="split-item-tag">Sparkling Water</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="parallax-strip"></div>
+
+  <!-- ─── DEMO ─── -->
+  <section id="demo" style="max-width:1200px;">
+    <span class="section-label reveal">Demo</span>
+    <h2 class="section-title reveal reveal-delay-1">See it in action.</h2>
+    <p class="section-sub reveal reveal-delay-2" style="margin: 0 auto;">Watch how Eezy Receipt turns an impossibly long restaurant bill into clean, individual totals in under a minute.</p>
+
+    <div class="demo-container reveal reveal-delay-2">
+      <div style="position:absolute; inset:0; background: radial-gradient(ellipse at 30% 50%, rgba(124,110,247,0.08) 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, rgba(52,211,153,0.05) 0%, transparent 60%);"></div>
+      <div class="demo-placeholder">
+        <div class="play-btn" onclick="this.innerHTML='⏸'; this.style.background='var(--green)'">
+          ▶
+        </div>
+        <div class="demo-label">Demo video coming soon — check the GitHub for the latest build</div>
+        <div style="margin-top:16px;">
+          <a href="https://github.com/ucsb-cs148-w26/pj04-receipt-divider" target="_blank" class="btn-secondary" style="font-size:13px; padding:10px 20px;">
+            View on GitHub →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="parallax-strip"></div>
+
+  <!-- ─── TECHNICAL OVERVIEW ─── -->
+  <section id="technical" style="max-width:1200px;">
+    <span class="section-label reveal">Technical Overview</span>
+    <h2 class="section-title reveal reveal-delay-1">Built for accuracy.<br />Designed for speed.</h2>
+    <p class="section-sub reveal reveal-delay-2" style="margin: 0 auto;">A modern mobile-first stack powering receipt intelligence from snap to settlement.</p>
+
+    <div class="tech-grid reveal reveal-delay-2">
+      <div class="tech-card">
+        <div class="tech-icon">📱</div>
+        <div class="tech-name">React Native + Expo</div>
+        <div class="tech-desc">Cross-platform mobile app targeting iOS first, with web support via Vite. Styled with Nativewind (Tailwind for React Native).</div>
+        <span class="tech-tag">TypeScript</span>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">👁️</div>
+        <div class="tech-name">Google Cloud Vision API</div>
+        <div class="tech-desc">OCR engine that reads printed and handwritten receipts with high accuracy, extracting item names, quantities, and prices.</div>
+        <span class="tech-tag">ML / Computer Vision</span>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🐍</div>
+        <div class="tech-name">Python Backend</div>
+        <div class="tech-desc">Lightweight Python API handles receipt processing, item parsing, and tax/tip distribution logic with clean REST endpoints.</div>
+        <span class="tech-tag">REST API</span>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🗄️</div>
+        <div class="tech-name">Supabase</div>
+        <div class="tech-desc">Postgres database with real-time subscriptions. Users, sessions, receipt data, and basket assignments stored and synced instantly.</div>
+        <span class="tech-tag">PostgreSQL · Realtime</span>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🎯</div>
+        <div class="tech-name">Drag & Drop Engine</div>
+        <div class="tech-desc">Custom gesture-based item assignment UI lets users intuitively assign receipt items to individual baskets with live total recalculation.</div>
+        <span class="tech-tag">React Native Gesture Handler</span>
+      </div>
+      <div class="tech-card">
+        <div class="tech-icon">🧮</div>
+        <div class="tech-name">Smart Cost Splitting</div>
+        <div class="tech-desc">Proportional tax and tip distribution based on item subtotals. Shared items split evenly. Every cent accounted for.</div>
+        <span class="tech-tag">Exact Math · No Rounding Errors</span>
+      </div>
+    </div>
+
+    <!-- Architecture diagram -->
+    <div class="arch-diagram reveal">
+      <div class="arch-node">
+        <div class="arch-node-icon">📱</div>
+        <div class="arch-node-label">React Native<br/>/ Expo</div>
+        <div class="arch-node-sub">iOS · Web</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <div class="arch-node-icon">☁️</div>
+        <div class="arch-node-label">Google Cloud<br/>Vision API</div>
+        <div class="arch-node-sub">OCR Engine</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <div class="arch-node-icon">🐍</div>
+        <div class="arch-node-label">Python<br/>Backend</div>
+        <div class="arch-node-sub">Item Parser</div>
+      </div>
+      <div class="arch-arrow">⇄</div>
+      <div class="arch-node">
+        <div class="arch-node-icon">🗄️</div>
+        <div class="arch-node-label">Supabase<br/>Postgres</div>
+        <div class="arch-node-sub">Realtime DB</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-node">
+        <div class="arch-node-icon">✅</div>
+        <div class="arch-node-label">Split<br/>Totals</div>
+        <div class="arch-node-sub">Per Person</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="parallax-strip"></div>
+
+  <!-- ─── GET STARTED ─── -->
+  <section id="getstarted" style="max-width:1200px;">
+    <div class="cta-block reveal">
+      <div style="position:absolute; top:40px; right:40px; font-size:60px; opacity:0.06; font-family:var(--font-serif);">✦</div>
+      <div style="position:absolute; bottom:40px; left:60px; font-size:40px; opacity:0.06; font-family:var(--font-serif);">✦</div>
+
+      <span class="section-label" style="background: rgba(52,211,153,0.15); border:1px solid rgba(52,211,153,0.25); border-radius:100px; padding:4px 14px; color:var(--green);">Now Available on TestFlight</span>
+      <h2 class="cta-title" style="margin-top:24px;">
+        Ready to split<br /><em style="font-style:italic; background: linear-gradient(135deg, var(--accent2), var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">without the drama?</em>
+      </h2>
+      <p class="cta-sub">Download Eezy Receipt on TestFlight for iOS, or explore the full source code on GitHub. Node.js 18+ required for local development.</p>
+
+      <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+        <a href="https://github.com/ucsb-cs148-w26/pj04-receipt-divider" target="_blank" class="btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+        <a href="https://github.com/ucsb-cs148-w26/pj04-receipt-divider" target="_blank" class="btn-secondary">
+          TestFlight Beta →
+        </a>
+      </div>
+
+      <div class="team-section">
+        <div class="team-label">Built by</div>
+        <div class="team-members">
+          <span class="team-chip">Yiheng Feng</span>
+          <span class="team-chip">Leifeng Chen</span>
+          <span class="team-chip">Roy Lee</span>
+          <span class="team-chip">Edward Garcia</span>
+          <span class="team-chip">Mason Le</span>
+          <span class="team-chip">Ken Thampiratwong</span>
+          <span class="team-chip">Charlie Nava</span>
+        </div>
+        <div style="margin-top:20px; font-size:13px; color:var(--muted);">UCSB CS148 · Winter 2026 · Project 04</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <div class="footer-left">
+      <div class="logo-mark" style="width:28px; height:28px; font-size:14px;">E</div>
+      <span class="footer-copy">© 2026 Eezy Receipt. UCSB CS148 W26.</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/ucsb-cs148-w26/pj04-receipt-divider" target="_blank">GitHub</a>
+      <a href="#product">Product</a>
+      <a href="#technical">Technical</a>
+    </div>
+  </footer>
+
+  <script>
+    // ─── SCROLL REVEAL ───
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    reveals.forEach(el => observer.observe(el));
+
+    // trigger hero items immediately
+    document.querySelectorAll('#hero .reveal').forEach((el, i) => {
+      setTimeout(() => el.classList.add('visible'), i * 120);
+    });
+
+    // ─── PARALLAX ───
+    const parallaxEls = document.querySelectorAll('.parallax-bg');
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      parallaxEls.forEach(el => {
+        const speed = parseFloat(el.dataset.speed) || 0.2;
+        el.style.transform = `translateX(-50%) translateY(${scrollY * speed}px)`;
+      });
+    }, { passive: true });
+
+    // ─── COUNTER ANIMATION ───
+    const counters = document.querySelectorAll('.counter');
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const target = parseInt(el.dataset.target);
+          const duration = 1800;
+          const step = target / (duration / 16);
+          let current = 0;
+          const timer = setInterval(() => {
+            current = Math.min(current + step, target);
+            el.textContent = Math.floor(current).toLocaleString();
+            if (current >= target) clearInterval(timer);
+          }, 16);
+          counterObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    counters.forEach(c => counterObserver.observe(c));
+
+    // ─── NAVBAR SCROLL EFFECT ───
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        navbar.style.background = 'rgba(10,10,15,0.95)';
+      } else {
+        navbar.style.background = 'rgba(10,10,15,0.7)';
+      }
+    }, { passive: true });
+
+    // ─── SMOOTH PARALLAX FOR SECTIONS ───
+    // subtle depth effect on scroll
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      const heroOrb1 = document.querySelector('.hero-orb-1');
+      const heroOrb2 = document.querySelector('.hero-orb-2');
+      const heroOrb3 = document.querySelector('.hero-orb-3');
+      if (heroOrb1) heroOrb1.style.transform = `translateX(-50%) translateY(${scrollY * 0.3}px)`;
+      if (heroOrb2) heroOrb2.style.transform = `translateY(${scrollY * 0.15}px)`;
+      if (heroOrb3) heroOrb3.style.transform = `translateY(${scrollY * 0.2}px)`;
+    }, { passive: true });
+  </script>
+</body>
+</html>
