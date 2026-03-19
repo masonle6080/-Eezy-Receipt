@@ -825,6 +825,14 @@
       color: var(--muted);
     }
 
+    .video-embed-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
     /*  TECH OVERVIEW  */
     #technical {
       text-align: center;
@@ -1337,7 +1345,7 @@
     </div>
 
     <h1 class="hero-headline reveal reveal-delay-1">
-      Split receipts.<br /><em>Not friendships.</em>
+      Split receipts,<br /><em>Not friendships.</em>
     </h1>
 
     <p class="hero-sub reveal reveal-delay-2">
@@ -1625,19 +1633,18 @@
     <h2 class="section-title reveal reveal-delay-1">Demo.</h2>
     <p class="section-sub reveal reveal-delay-2" style="margin: 0 auto;"></p>
 
-    <a href="https://youtu.be/tGaxgyy-COs" target="_blank" rel="noopener"
-       class="demo-container reveal reveal-delay-2"
-       style="display:block; text-decoration:none; cursor:pointer; background:#000;">
-      <img
-        src="https://img.youtube.com/vi/tGaxgyy-COs/maxresdefault.jpg"
-        alt="Demo video"
-        style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.85;"
-      />
-      <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;">
-        <div class="play-btn" style="pointer-events:none;">▶</div>
-        <div class="demo-label" style="color:#fff; font-size:14px;">Watch on YouTube</div>
-      </div>
-    </a>
+    <div class="demo-container reveal reveal-delay-2" style="background:#000;">
+      <iframe
+        class="video-embed-frame youtube-embed"
+        data-video-id="tGaxgyy-COs"
+        src=""
+        title="Eezy Receipt Demo Video"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="origin"
+        allowfullscreen
+      ></iframe>
+    </div>
   </section>
 
   <div class="parallax-strip"></div>
@@ -1871,20 +1878,20 @@
 
   <div class="parallax-strip"></div>
 
-  <div style="width:100%; max-width:1200px; margin:80px auto 0; padding:0 40px; box-sizing:border-box;">
+  <div style="width:100%; max-width:1200px; margin:80px auto 0; padding:0 40px; box-sizing:border-box; padding-bottom:150px;">
     <div style="font-size:13px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:16px;">Presentation Walkthrough</div>
-    <a href="https://www.youtube.com/watch?v=f8BgOJxJNMg" target="_blank" rel="noopener"
-       style="display:block; position:relative; aspect-ratio:16/9; border-radius:20px; overflow:hidden; border:1px solid var(--border); background:#000; text-decoration:none;">
-      <img
-        src="https://img.youtube.com/vi/f8BgOJxJNMg/maxresdefault.jpg"
-        alt="Presentation Walkthrough"
-        style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.8;"
-      />
-      <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;">
-        <div class="play-btn" style="pointer-events:none;">▶</div>
-        <div style="color:#fff; font-size:14px; font-weight:600;">Watch Presentation Walkthrough</div>
-      </div>
-    </a>
+    <div style="display:block; position:relative; aspect-ratio:16/9; border-radius:20px; overflow:hidden; border:1px solid var(--border); background:#000; text-decoration:none;">
+      <iframe
+        class="video-embed-frame youtube-embed"
+        data-video-id="f8BgOJxJNMg"
+        src=""
+        title="Eezy Receipt Presentation Walkthrough"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="origin"
+        allowfullscreen
+      ></iframe>
+    </div>
   </div>
 
   <script>
@@ -1900,6 +1907,37 @@
     }, { threshold: 0.1 });
 
     reveals.forEach(el => observer.observe(el));
+
+    function initYouTubeEmbeds() {
+      const embeds = document.querySelectorAll('.youtube-embed');
+      const isHttp = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+
+      embeds.forEach((frame) => {
+        const videoId = frame.dataset.videoId;
+        if (!videoId) return;
+
+        if (!isHttp) {
+          const wrapper = frame.parentElement;
+          if (!wrapper) return;
+          wrapper.innerHTML = `
+            <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:24px; color:var(--muted); font-size:14px; line-height:1.6;">
+              YouTube embeds need an HTTP(S) origin. Open this page via localhost to play videos inline.
+            </div>
+          `;
+          return;
+        }
+
+        const params = new URLSearchParams({
+          rel: '0',
+          modestbranding: '1',
+          playsinline: '1',
+          origin: window.location.origin
+        });
+        frame.src = `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
+      });
+    }
+
+    initYouTubeEmbeds();
 
     // trigger hero items immediately
     document.querySelectorAll('#hero .reveal').forEach((el, i) => {
