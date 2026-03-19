@@ -437,10 +437,10 @@
       position: absolute;
       inset: 0;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1.6fr;
       align-items: center;
-      padding: 0 max(80px, calc((100vw - 1200px) / 2));
-      gap: 80px;
+      padding: 0 max(60px, calc((100vw - 1400px) / 2));
+      gap: 60px;
       opacity: 0;
       pointer-events: none;
       will-change: transform, opacity;
@@ -514,7 +514,6 @@
       border-radius: 24px;
       padding: 40px;
       width: 100%;
-      max-width: 420px;
       position: relative;
       overflow: hidden;
     }
@@ -1308,7 +1307,7 @@
 </head>
 <body>
 
-  <!--  NAVBAR  -->
+  
   <nav id="navbar">
     <a href="#hero" class="nav-logo">
       <img src="logo.png" width="32" height="32" alt="Eezy Receipt logo" style="flex-shrink:0"/>
@@ -1321,11 +1320,12 @@
       <li><a href="#demo">Demo</a></li>
       <li><a href="#technical">Technical</a></li>
       <li><a href="#recap">Recap</a></li>
+      <li><a href="#team">Team</a></li>
       <li><a href="#getstarted" class="nav-cta">Get Started</a></li>
     </ul>
   </nav>
 
-  <!--  HERO  -->
+  
   <section id="hero" style="max-width:100%; padding-left: 40px; padding-right: 40px;">
     <div class="hero-orb hero-orb-1 parallax-bg" data-speed="0.3"></div>
     <div class="hero-orb hero-orb-2 parallax-bg" data-speed="0.15"></div>
@@ -1357,7 +1357,7 @@
 
   </section>
 
-  <!--  MARQUEE  -->
+  
   <div class="marquee-wrapper" style="padding: 0;">
     <div class="marquee-track">
       <div class="marquee-item"> Snap a photo</div>
@@ -1370,7 +1370,7 @@
       <div class="marquee-item"> Supabase backend</div>
       <div class="marquee-item"> Real-time sync</div>
       <div class="marquee-item"> Multi-person baskets</div>
-      <!-- repeat 2 for seamless loop (3 total copies → translateX(-33.3%) = one set) -->
+      
       <div class="marquee-item"> Snap a photo</div>
       <div class="marquee-item"> OCR item extraction</div>
       <div class="marquee-item"> Drag & drop assignment</div>
@@ -1381,7 +1381,7 @@
       <div class="marquee-item"> Supabase backend</div>
       <div class="marquee-item"> Real-time sync</div>
       <div class="marquee-item"> Multi-person baskets</div>
-      <!-- repeat 3 -->
+      
       <div class="marquee-item"> Snap a photo</div>
       <div class="marquee-item"> OCR item extraction</div>
       <div class="marquee-item"> Drag & drop assignment</div>
@@ -1397,7 +1397,7 @@
 
   <div class="parallax-strip" style="margin-top: 80px;"></div>
 
-  <!--  PRODUCT  -->
+  
   <section id="product">
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
       <div>
@@ -1410,31 +1410,22 @@
         </p>
 
         <div style="margin-top: 48px; display: flex; flex-direction: column; gap: 20px;" class="reveal reveal-delay-3">
-          <div style="display:flex; gap:16px; align-items:flex-start;">
-            <div style="width:40px; height:40px; border-radius:10px; background: rgba(124,110,247,0.15); border: 1px solid rgba(124,110,247,0.3); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;"></div>
-            <div>
-              <div style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px;">OCR-powered reading</div>
-              <div style="font-size:14px; color:var(--muted);">Google Cloud Vision extracts item names, quantities, and prices from the receipt image.</div>
-            </div>
+          <div>
+            <div style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px;">OCR-powered reading</div>
+            <div style="font-size:14px; color:var(--muted);">Google Cloud Vision extracts item names, quantities, and prices from the receipt image.</div>
           </div>
-          <div style="display:flex; gap:16px; align-items:flex-start;">
-            <div style="width:40px; height:40px; border-radius:10px; background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.25); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;"></div>
-            <div>
-              <div style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px;">Personal baskets</div>
-              <div style="font-size:14px; color:var(--muted);">Each person has a basket. Drag items in — totals update live.</div>
-            </div>
+          <div>
+            <div style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px;">Personal baskets</div>
+            <div style="font-size:14px; color:var(--muted);">Each person has a basket. Drag items in — totals update live.</div>
           </div>
-          <div style="display:flex; gap:16px; align-items:flex-start;">
-            <div style="width:40px; height:40px; border-radius:10px; background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.25); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;"></div>
-            <div>
-              <div style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px;">Tax split</div>
-              <div style="font-size:14px; color:var(--muted);">Tax distributed proportionally based on each person's subtotal.</div>
-            </div>
+          <div>
+            <div style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:4px;">Tax split</div>
+            <div style="font-size:14px; color:var(--muted);">Tax distributed proportionally based on each person's subtotal.</div>
           </div>
         </div>
       </div>
 
-      <!-- receipt illustration -->
+      
       <div class="reveal reveal-delay-2" style="position:relative;">
         <div style="position:absolute; inset:-60px; background:radial-gradient(ellipse, rgba(124,110,247,0.12) 0%, transparent 70%); pointer-events:none;"></div>
         <div class="receipt-paper" style="position:relative; z-index:1;">
@@ -1478,7 +1469,7 @@
 
   <div class="parallax-strip"></div>
 
-  <!--  USERS & ROLES  -->
+  
   <section id="users" style="max-width:1200px;">
     <span class="section-label reveal">Users &amp; Roles</span>
     <h2 class="section-title reveal reveal-delay-1">Two roles.</h2>
@@ -1528,7 +1519,7 @@
 
   <div class="parallax-strip"></div>
 
-  <!--  USER JOURNEY  -->
+  
   <section id="journey">
 
     <div id="journey-intro">
@@ -1537,11 +1528,11 @@
       <p class="section-sub reveal reveal-delay-2" style="margin: 0 auto;"></p>
     </div>
 
-    <!-- Tall scroll container -->
+    
     <div id="journey-scroll">
       <div id="journey-sticky">
 
-        <!-- STEP 1 -->
+        
         <div class="journey-panel panel-accent-1" data-step="0">
           <div class="panel-orb"></div>
           <div class="panel-text">
@@ -1551,30 +1542,13 @@
             <p class="panel-desc">Open the app on iOS or web. Photograph the receipt.</p>
           </div>
           <div class="panel-visual">
-            <div class="panel-card">
-              <div style="font-size:13px; font-weight:600; color:var(--muted); margin-bottom:20px; display:flex; align-items:center; gap:8px;">
-                <span style="width:8px;height:8px;border-radius:50%;background:#34d399;display:inline-block;"></span>
-                Camera active
-              </div>
-              <!-- phone frame with receipt inside -->
-              <div style="background:#111; border-radius:16px; padding:20px; border:1px solid rgba(255,255,255,0.06); position:relative; overflow:hidden; min-height:200px;">
-                <div class="scan-line"></div>
-                <div style="font-family:'Courier New',monospace; font-size:11px; color:rgba(255,255,255,0.5); line-height:1.8;">
-                  <div style="color:rgba(255,255,255,0.25); text-align:center; margin-bottom:8px;">THE HUNGRY WOLF</div>
-                  <div style="display:flex;justify-content:space-between;"><span>Wagyu Burger</span><span>$24.00</span></div>
-                  <div style="display:flex;justify-content:space-between;"><span>Truffle Fries</span><span>$12.50</span></div>
-                  <div style="display:flex;justify-content:space-between;"><span>Spicy Tuna Roll</span><span>$18.00</span></div>
-                  <div style="display:flex;justify-content:space-between;"><span>Lobster Bisque</span><span>$16.00</span></div>
-                  <div style="display:flex;justify-content:space-between;"><span>Matcha Latte</span><span>$7.50</span></div>
-                  <div style="color:rgba(52,211,153,0.8); margin-top:12px; font-weight:bold; display:flex;justify-content:space-between;"><span>TOTAL</span><span>$243.34</span></div>
-                </div>
-              </div>
-              <div style="margin-top:16px; text-align:center; font-size:12px; color:var(--muted);"> Align receipt within frame</div>
+            <div class="panel-card" style="padding:0; background:transparent; border:none; box-shadow:none; display:flex; align-items:center; justify-content:center;">
+              <img src="receipt-sample.jpg" alt="Receipt photo" style="width:auto; height:calc(100vh - 160px); max-width:100%; object-fit:contain; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.6));" />
             </div>
           </div>
         </div>
 
-        <!-- STEP 2 -->
+        
         <div class="journey-panel panel-accent-2" data-step="1">
           <div class="panel-orb"></div>
           <div class="panel-text">
@@ -1584,35 +1558,13 @@
             <p class="panel-desc">Google Cloud Vision extracts every item, price, tax, and tip from the image.</p>
           </div>
           <div class="panel-visual">
-            <div class="panel-card">
-              <div style="font-size:13px; font-weight:600; color:var(--muted); margin-bottom:20px; display:flex; align-items:center; gap:8px;">
-                <span style="width:8px;height:8px;border-radius:50%;background:#34d399;display:inline-block;animation:pulse 1.5s infinite;"></span>
-                Extracting items...
-              </div>
-              <div style="display:flex; flex-direction:column; gap:10px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.2); border-radius:8px; padding:10px 14px; font-size:13px;">
-                  <span style="color:var(--text);">Wagyu Burger</span>
-                  <span style="color:#34d399; font-weight:700;">$24.00 </span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.2); border-radius:8px; padding:10px 14px; font-size:13px;">
-                  <span style="color:var(--text);">Spicy Tuna Roll</span>
-                  <span style="color:#34d399; font-weight:700;">$18.00 </span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.2); border-radius:8px; padding:10px 14px; font-size:13px;">
-                  <span style="color:var(--text);">Lobster Bisque</span>
-                  <span style="color:#34d399; font-weight:700;">$16.00 </span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-size:13px; opacity:0.5;">
-                  <span style="color:var(--text);">Truffle Fries</span>
-                  <span style="color:var(--muted);">reading...</span>
-                </div>
-              </div>
-              <div style="margin-top:16px; font-size:12px; color:var(--muted); text-align:center;">15 items detected · 3 remaining</div>
+            <div class="panel-card" style="padding:0; background:transparent; border:none; box-shadow:none; display:flex; align-items:center; justify-content:center;">
+              <img src="step2.png" alt="Items list screen" style="width:auto; height:calc(100vh - 60px); max-width:100%; object-fit:contain; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.5));" />
             </div>
           </div>
         </div>
 
-        <!-- STEP 3 -->
+        
         <div class="journey-panel panel-accent-3" data-step="2">
           <div class="panel-orb"></div>
           <div class="panel-text">
@@ -1622,36 +1574,13 @@
             <p class="panel-desc">Drag items into each person's basket. Shared items split evenly. Totals update live.</p>
           </div>
           <div class="panel-visual">
-            <div class="panel-card">
-              <div style="font-size:13px; font-weight:600; color:var(--muted); margin-bottom:20px;">Assigning items</div>
-              <!-- unassigned items -->
-              <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; min-height:48px;">
-                <span class="floating-tag split-item-tag" style="cursor:grab;"> Wagyu Burger</span>
-                <span class="floating-tag split-item-tag" style="cursor:grab; animation-delay:0.4s;"> Matcha Latte</span>
-                <span class="floating-tag split-item-tag" style="cursor:grab; animation-delay:0.8s;"> Truffle Fries</span>
-              </div>
-              <!-- baskets -->
-              <div style="display:flex; flex-direction:column; gap:8px;">
-                <div style="background:rgba(124,110,247,0.08); border:1px dashed rgba(124,110,247,0.3); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
-                  <div style="display:flex; align-items:center; gap:10px;">
-                    <div class="avatar" style="width:28px;height:28px;font-size:12px;background:linear-gradient(135deg,#7c6ef7,#a78bfa);">M</div>
-                    <span style="color:var(--text);">Mason's basket</span>
-                  </div>
-                  <span style="color:var(--accent2); font-weight:700;">$34.20</span>
-                </div>
-                <div style="background:rgba(52,211,153,0.06); border:1px dashed rgba(52,211,153,0.25); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
-                  <div style="display:flex; align-items:center; gap:10px;">
-                    <div class="avatar" style="width:28px;height:28px;font-size:12px;background:linear-gradient(135deg,#34d399,#059669);">R</div>
-                    <span style="color:var(--text);">Roy's basket</span>
-                  </div>
-                  <span style="color:#34d399; font-weight:700;">$28.75</span>
-                </div>
-              </div>
+            <div class="panel-card" style="padding:0; background:transparent; border:none; box-shadow:none; display:flex; align-items:center; justify-content:center;">
+              <img src="step3.png" alt="Claim items screen" style="width:auto; height:calc(100vh - 160px); max-width:100%; object-fit:contain; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.5));" />
             </div>
           </div>
         </div>
 
-        <!-- STEP 4 -->
+        
         <div class="journey-panel panel-accent-4" data-step="3">
           <div class="panel-orb"></div>
           <div class="panel-text">
@@ -1661,39 +1590,13 @@
             <p class="panel-desc">Tax and tip split proportionally. Each person sees exactly what they owe.</p>
           </div>
           <div class="panel-visual">
-            <div class="panel-card">
-              <div style="font-size:13px; font-weight:600; color:var(--muted); margin-bottom:20px; display:flex; align-items:center; gap:8px;">
-                <span style="color:#34d399;"></span> Split complete
-              </div>
-              <div style="display:flex; flex-direction:column; gap:12px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; background:rgba(124,110,247,0.08); border:1px solid rgba(124,110,247,0.2); border-radius:10px;">
-                  <div style="display:flex;align-items:center;gap:10px;">
-                    <div class="avatar" style="width:32px;height:32px;font-size:13px;background:linear-gradient(135deg,#7c6ef7,#a78bfa);">M</div>
-                    <div><div style="font-size:13px;font-weight:600;color:var(--text);">Mason</div><div style="font-size:11px;color:var(--muted);">Wagyu + Cold Brew</div></div>
-                  </div>
-                  <span style="font-size:18px;font-weight:800;color:var(--accent2);">$34.20</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:10px;">
-                  <div style="display:flex;align-items:center;gap:10px;">
-                    <div class="avatar" style="width:32px;height:32px;font-size:13px;background:linear-gradient(135deg,#34d399,#059669);">R</div>
-                    <div><div style="font-size:13px;font-weight:600;color:var(--text);">Roy</div><div style="font-size:11px;color:var(--muted);">Tuna Roll + Lemonade</div></div>
-                  </div>
-                  <span style="font-size:18px;font-weight:800;color:#34d399;">$28.75</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.2); border-radius:10px;">
-                  <div style="display:flex;align-items:center;gap:10px;">
-                    <div class="avatar" style="width:32px;height:32px;font-size:13px;background:linear-gradient(135deg,#f59e0b,#d97706);">E</div>
-                    <div><div style="font-size:13px;font-weight:600;color:var(--text);">Edward</div><div style="font-size:11px;color:var(--muted);">Lobster + Tiramisu</div></div>
-                  </div>
-                  <span style="font-size:18px;font-weight:800;color:#f59e0b;">$41.60</span>
-                </div>
-              </div>
-              <div style="margin-top:16px; text-align:center; font-size:12px; color:var(--muted);">Total: $243.34 · 7 people · All settled </div>
+            <div class="panel-card" style="padding:0; background:transparent; border:none; box-shadow:none; display:flex; align-items:center; justify-content:center;">
+              <img src="step4.png" alt="Finance summary screen" style="width:auto; height:calc(100vh - 160px); max-width:100%; object-fit:contain; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.5));" />
             </div>
           </div>
         </div>
 
-        <!-- Progress bar -->
+        
         <div id="journey-progress-bar-wrap">
           <div style="display:flex; align-items:baseline; gap:0;">
             <span id="journey-step-current">01</span>
@@ -1708,39 +1611,38 @@
           </div>
         </div>
 
-      </div><!-- /sticky -->
-    </div><!-- /scroll -->
+      </div>
+    </div>
 
   </section>
 
 
   <div class="parallax-strip"></div>
 
-  <!--  DEMO  -->
+  
   <section id="demo" style="max-width:1200px;">
     <span class="section-label reveal">Demo</span>
     <h2 class="section-title reveal reveal-delay-1">Demo.</h2>
     <p class="section-sub reveal reveal-delay-2" style="margin: 0 auto;"></p>
 
-    <div class="demo-container reveal reveal-delay-2">
-      <div style="position:absolute; inset:0; background: radial-gradient(ellipse at 30% 50%, rgba(124,110,247,0.08) 0%, transparent 60%), radial-gradient(ellipse at 70% 50%, rgba(52,211,153,0.05) 0%, transparent 60%);"></div>
-      <div class="demo-placeholder">
-        <div class="play-btn" onclick="this.innerHTML='⏸'; this.style.background='var(--green)'">
-          
-        </div>
-        <div class="demo-label">Demo video coming soon — check the GitHub for the latest build</div>
-        <div style="margin-top:16px;">
-          <a href="https://github.com/ucsb-cs148-w26/pj04-receipt-divider" target="_blank" class="btn-secondary" style="font-size:13px; padding:10px 20px;">
-            View on GitHub →
-          </a>
-        </div>
+    <a href="https://youtu.be/tGaxgyy-COs" target="_blank" rel="noopener"
+       class="demo-container reveal reveal-delay-2"
+       style="display:block; text-decoration:none; cursor:pointer; background:#000;">
+      <img
+        src="https://img.youtube.com/vi/tGaxgyy-COs/maxresdefault.jpg"
+        alt="Demo video"
+        style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.85;"
+      />
+      <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;">
+        <div class="play-btn" style="pointer-events:none;">▶</div>
+        <div class="demo-label" style="color:#fff; font-size:14px;">Watch on YouTube</div>
       </div>
-    </div>
+    </a>
   </section>
 
   <div class="parallax-strip"></div>
 
-  <!--  GUARDRAILS / EDGE CASES  -->
+  
   <section id="guardrails" style="max-width:1200px;">
     <span class="section-label reveal">Guardrails &amp; Edge Cases</span>
     <h2 class="section-title reveal reveal-delay-1">Edge cases<br/>we handled.</h2>
@@ -1760,7 +1662,7 @@
 
   <div class="parallax-strip"></div>
 
-  <!--  TECHNICAL OVERVIEW  -->
+  
   <section id="technical" style="max-width:1200px;">
     <span class="section-label reveal">Technical Overview</span>
     <h2 class="section-title reveal reveal-delay-1">The stack.</h2>
@@ -1770,7 +1672,7 @@
       <img src="arch-diagram.png" alt="Eezy Receipt System Architecture Diagram" style="width:100%; border-radius:16px; border:1px solid var(--border);" />
     </div>
 
-    <!-- Architecture rationale -->
+    
     <div style="margin-top:48px; display:grid; grid-template-columns:1fr 1fr; gap:24px;" class="reveal">
       <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px;">
         <div style="font-size:13px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent2); margin-bottom:12px;">Why React Native + Expo?</div>
@@ -1793,7 +1695,7 @@
 
   <div class="parallax-strip"></div>
 
-  <!--  CHALLENGES  -->
+  
   <section id="challenges" style="max-width:1200px;">
     <span class="section-label reveal">Challenges</span>
     <h2 class="section-title reveal reveal-delay-1">Challenges.</h2>
@@ -1817,7 +1719,7 @@
 
   <div class="parallax-strip"></div>
 
-  <!--  FUTURE WORK  -->
+  
   <section id="future" style="max-width:1200px;">
     <span class="section-label reveal">Future Work</span>
     <h2 class="section-title reveal reveal-delay-1">If we had one<br/>more phase…</h2>
@@ -1831,7 +1733,7 @@
 
   <div class="parallax-strip"></div>
 
-  <!--  RECAP  -->
+  
   <section id="recap" style="max-width:1200px;">
     <span class="section-label reveal">Project Recap</span>
     <h2 class="section-title reveal reveal-delay-1">What we built.</h2>
@@ -1867,7 +1769,7 @@
 
   <div class="parallax-strip"></div>
 
-  <!--  GET STARTED  -->
+  
   <section id="getstarted" style="max-width:1200px;">
     <div class="cta-block reveal">
       <div style="position:absolute; top:40px; right:40px; font-size:60px; opacity:0.06; font-family:var(--font-serif);"></div>
@@ -1884,26 +1786,106 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
           View on GitHub
         </a>
-        <a href="https://github.com/ucsb-cs148-w26/pj04-receipt-divider" target="_blank" class="btn-secondary">
+        <a href="https://testflight.apple.com/join/8bhMpGgZ" target="_blank" class="btn-secondary">
           TestFlight Beta →
         </a>
       </div>
 
       <div class="team-section">
         <div class="team-label">UCSB CS148 · Winter 2026 · Project 04</div>
-        <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-top:16px;">
-          <span class="team-chip">Yiheng Feng</span>
-          <span class="team-chip">Leifeng Chen</span>
-          <span class="team-chip">Roy Lee</span>
-          <span class="team-chip">Edward Garcia</span>
-          <span class="team-chip">Mason Le</span>
-          <span class="team-chip">Ken Thampiratwong</span>
-          <span class="team-chip">Charlie Nava</span>
-        </div>
       </div>
     </div>
   </section>
 
+  <svg style="position:absolute;width:0;height:0;overflow:hidden">
+    <defs>
+      <filter id="chromakey" color-interpolation-filters="sRGB" x="0" y="0" width="100%" height="100%">
+        <feColorMatrix type="matrix" values="
+          0  0  0  0  0
+          0  0  0  0  0
+          0  0  0  0  0
+          1 -2  1  0  0.9
+        " result="mask"/>
+        <feComposite in="SourceGraphic" in2="mask" operator="in"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <section id="team" style="max-width:1200px; text-align:center;">
+    <span class="section-label reveal">Team</span>
+    <h2 class="section-title reveal reveal-delay-1">The people.</h2>
+
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:32px 24px; margin-top:60px;" class="reveal reveal-delay-2">
+
+      <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
+        <div style="width:140px; height:140px; border-radius:50%; overflow:hidden; background:var(--surface); border:1px solid var(--border);">
+          <img src="team_harry.png" alt="Yiheng Feng" style="width:100%; height:100%; object-fit:cover; object-position:center top; filter:url(#chromakey);" />
+        </div>
+        <div style="font-size:15px; font-weight:600; color:var(--text);">Yiheng Feng</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
+        <div style="width:140px; height:140px; border-radius:50%; overflow:hidden; background:var(--surface); border:1px solid var(--border);">
+          <img src="team_leifeng.png" alt="Leifeng Chen" style="width:100%; height:100%; object-fit:cover; object-position:center top;" />
+        </div>
+        <div style="font-size:15px; font-weight:600; color:var(--text);">Leifeng Chen</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
+        <div style="width:140px; height:140px; border-radius:50%; overflow:hidden; background:var(--surface); border:1px solid var(--border);">
+          <img src="team_roy.png" alt="Roy Lee" style="width:100%; height:100%; object-fit:cover; object-position:center top; filter:url(#chromakey);" />
+        </div>
+        <div style="font-size:15px; font-weight:600; color:var(--text);">Roy Lee</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
+        <div style="width:140px; height:140px; border-radius:50%; overflow:hidden; background:var(--surface); border:1px solid var(--border);">
+          <img src="team_edward.png" alt="Edward Garcia" style="width:100%; height:100%; object-fit:cover; object-position:center top; filter:url(#chromakey);" />
+        </div>
+        <div style="font-size:15px; font-weight:600; color:var(--text);">Edward Garcia</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
+        <div style="width:140px; height:140px; border-radius:50%; overflow:hidden; background:var(--surface); border:1px solid var(--border);">
+          <img src="team_mason.png" alt="Mason Le" style="width:100%; height:100%; object-fit:cover; object-position:center top;" />
+        </div>
+        <div style="font-size:15px; font-weight:600; color:var(--text);">Mason Le</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
+        <div style="width:140px; height:140px; border-radius:50%; overflow:hidden; background:var(--surface); border:1px solid var(--border);">
+          <img src="team_ken.png" alt="Ken Thampiratwong" style="width:100%; height:100%; object-fit:cover; object-position:center top;" />
+        </div>
+        <div style="font-size:15px; font-weight:600; color:var(--text);">Ken Thampiratwong</div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; align-items:center; gap:14px;">
+        <div style="width:140px; height:140px; border-radius:50%; overflow:hidden; background:var(--surface); border:1px solid var(--border);">
+          <img src="team_charlie.png" alt="Charlie Nava" style="width:100%; height:100%; object-fit:cover; object-position:center top; filter:url(#chromakey);" />
+        </div>
+        <div style="font-size:15px; font-weight:600; color:var(--text);">Charlie Nava</div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="parallax-strip"></div>
+
+  <div style="width:100%; max-width:1200px; margin:80px auto 0; padding:0 40px; box-sizing:border-box;">
+    <div style="font-size:13px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:16px;">Presentation Walkthrough</div>
+    <a href="https://youtu.be/71U4KXQA2Pw" target="_blank" rel="noopener"
+       style="display:block; position:relative; aspect-ratio:16/9; border-radius:20px; overflow:hidden; border:1px solid var(--border); background:#000; text-decoration:none;">
+      <img
+        src="https://img.youtube.com/vi/71U4KXQA2Pw/maxresdefault.jpg"
+        alt="Presentation Walkthrough"
+        style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.8;"
+      />
+      <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;">
+        <div class="play-btn" style="pointer-events:none;">▶</div>
+        <div style="color:#fff; font-size:14px; font-weight:600;">Watch Presentation Walkthrough</div>
+      </div>
+    </a>
+  </div>
 
   <script>
     //  SCROLL REVEAL 
