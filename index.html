@@ -1543,7 +1543,7 @@
           </div>
           <div class="panel-visual">
             <div class="panel-card" style="padding:0; background:transparent; border:none; box-shadow:none; display:flex; align-items:center; justify-content:center;">
-              <img src="receipt-sample.jpg" alt="Receipt photo" style="width:auto; height:calc(100vh - 160px); max-width:100%; object-fit:contain; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.6));" />
+              <img src="step1-thumb.png" data-full-src="step1.png" class="journey-progressive-img" loading="lazy" decoding="async" alt="Receipt photo" style="width:auto; height:calc(100vh - 160px); max-width:100%; object-fit:contain; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.6));" />
             </div>
           </div>
         </div>
@@ -1559,7 +1559,7 @@
           </div>
           <div class="panel-visual">
             <div class="panel-card" style="padding:0; background:transparent; border:none; box-shadow:none; display:flex; align-items:center; justify-content:center;">
-              <img src="step2.png" alt="Items list screen" style="width:auto; height:calc(100vh - 60px); max-width:100%; object-fit:contain; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.5));" />
+              <img src="step2-thumb.png" data-full-src="step2.png" class="journey-progressive-img" loading="lazy" decoding="async" alt="Items list screen" style="width:auto; height:calc(100vh - 60px); max-width:100%; object-fit:contain; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.5));" />
             </div>
           </div>
         </div>
@@ -1575,7 +1575,7 @@
           </div>
           <div class="panel-visual">
             <div class="panel-card" style="padding:0; background:transparent; border:none; box-shadow:none; display:flex; align-items:center; justify-content:center;">
-              <img src="step3.png" alt="Claim items screen" style="width:auto; height:calc(100vh - 160px); max-width:100%; object-fit:contain; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.5));" />
+              <img src="step3-thumb.png" data-full-src="step3.png" class="journey-progressive-img" loading="lazy" decoding="async" alt="Claim items screen" style="width:auto; height:calc(100vh - 160px); max-width:100%; object-fit:contain; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.5));" />
             </div>
           </div>
         </div>
@@ -1591,7 +1591,7 @@
           </div>
           <div class="panel-visual">
             <div class="panel-card" style="padding:0; background:transparent; border:none; box-shadow:none; display:flex; align-items:center; justify-content:center;">
-              <img src="step4.png" alt="Finance summary screen" style="width:auto; height:calc(100vh - 160px); max-width:100%; object-fit:contain; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.5));" />
+              <img src="step4-thumb.png" data-full-src="step4.png" class="journey-progressive-img" loading="lazy" decoding="async" alt="Finance summary screen" style="width:auto; height:calc(100vh - 160px); max-width:100%; object-fit:contain; filter:drop-shadow(0 20px 60px rgba(0,0,0,0.5));" />
             </div>
           </div>
         </div>
@@ -1937,6 +1937,7 @@
     //  JOURNEY CONTINUOUS SCROLL PARALLAX 
     const journeyScroll    = document.getElementById('journey-scroll');
     const journeyPanels    = document.querySelectorAll('.journey-panel');
+    const journeyImages    = Array.from(journeyPanels, panel => panel.querySelector('.journey-progressive-img'));
     const barFill          = document.getElementById('journey-bar-fill');
     const stepCurrentEl    = document.getElementById('journey-step-current');
     const stepLabelEl      = document.getElementById('journey-step-label');
@@ -1953,6 +1954,25 @@
 
     let rafId = null;
     let lastProgress = -1;
+
+    function loadHighResImage(img) {
+      if (!img || img.dataset.hiresLoaded === 'true' || img.dataset.hiresLoading === 'true') return;
+      const fullSrc = img.dataset.fullSrc;
+      if (!fullSrc) return;
+
+      img.dataset.hiresLoading = 'true';
+      const highRes = new Image();
+      highRes.decoding = 'async';
+      highRes.src = fullSrc;
+      highRes.onload = () => {
+        img.src = fullSrc;
+        img.dataset.hiresLoaded = 'true';
+        delete img.dataset.hiresLoading;
+      };
+      highRes.onerror = () => {
+        delete img.dataset.hiresLoading;
+      };
+    }
 
     function easeInOut(t) {
       return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
@@ -1986,6 +2006,10 @@
       stepLabelEl.textContent   = STEP_LABELS[stepIndex];
       barFill.style.background  = STEP_COLORS[stepIndex];
       barFill.style.boxShadow   = `0 0 12px ${STEP_COLORS[stepIndex]}66`;
+
+      // Progressive image loading for journey panels: active step first, next step preloaded.
+      loadHighResImage(journeyImages[stepIndex]);
+      loadHighResImage(journeyImages[stepIndex + 1]);
 
       // Animate each panel
       journeyPanels.forEach((panel, i) => {
@@ -2067,6 +2091,7 @@
     }, { passive: true });
 
     updateActiveNav(window.scrollY);
+    updateJourney();
   </script>
 </body>
 </html>
